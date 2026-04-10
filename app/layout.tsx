@@ -1,5 +1,5 @@
 import type { Metadata, Viewport } from 'next'
-import { Barlow, Barlow_Condensed, IBM_Plex_Mono } from 'next/font/google'
+import { Barlow, Barlow_Condensed, IBM_Plex_Mono, Public_Sans } from 'next/font/google'
 import { Analytics } from '@vercel/analytics/next'
 import './globals.css'
 
@@ -21,10 +21,20 @@ const ibmPlexMono = IBM_Plex_Mono({
   variable: "--font-ibm-plex-mono"
 })
 
+const publicSans = Public_Sans({
+  subsets: ["latin"],
+  weight: ["400", "700"],
+  variable: "--font-public-sans"
+})
+
 export const metadata: Metadata = {
   title: 'SVC Command Center',
   description: 'Field operations management for construction crews',
   manifest: '/manifest.json',
+  icons: {
+    icon: '/logo.png',
+    apple: '/logo.png',
+  },
   appleWebApp: {
     capable: true,
     statusBarStyle: 'default',
@@ -33,7 +43,7 @@ export const metadata: Metadata = {
 }
 
 export const viewport: Viewport = {
-  themeColor: '#e07020',
+  themeColor: '#e27121',
   width: 'device-width',
   initialScale: 1,
   maximumScale: 1,
@@ -47,8 +57,16 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
-      <body className={`${barlow.variable} ${barlowCondensed.variable} ${ibmPlexMono.variable} font-sans antialiased`}>
-        {children}
+      <head>
+        <link
+          rel="stylesheet"
+          href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200&display=block"
+        />
+      </head>
+      <body className={`${barlow.variable} ${barlowCondensed.variable} ${ibmPlexMono.variable} ${publicSans.variable} font-sans antialiased`}>
+        <div className="mobile-shell">
+          {children}
+        </div>
         {process.env.NODE_ENV === 'production' && <Analytics />}
       </body>
     </html>

@@ -3,16 +3,14 @@
 import { useState } from 'react'
 import { useRouter } from 'next/navigation'
 import Link from 'next/link'
-import { Button } from '@/components/ui/button'
-import { Textarea } from '@/components/ui/textarea'
 import { ArrowLeft, Check, ThumbsUp, Minus, ThumbsDown } from 'lucide-react'
 
 type Feeling = 'good' | 'neutral' | 'bad'
 
-const feelings = [
-  { id: 'good' as Feeling, icon: ThumbsUp, label: 'Good' },
-  { id: 'neutral' as Feeling, icon: Minus, label: 'Ok' },
-  { id: 'bad' as Feeling, icon: ThumbsDown, label: 'Bad' },
+const feelings: { id: Feeling; icon: typeof ThumbsUp; label: string }[] = [
+  { id: 'good', icon: ThumbsUp, label: 'Good' },
+  { id: 'neutral', icon: Minus, label: 'Ok' },
+  { id: 'bad', icon: ThumbsDown, label: 'Bad' },
 ]
 
 export default function FeedbackPage() {
@@ -33,65 +31,73 @@ export default function FeedbackPage() {
 
   if (showSuccess) {
     return (
-      <div className="min-h-screen bg-black flex flex-col items-center justify-center p-6 fade-in">
+      <div className="min-h-screen bg-background flex flex-col items-center justify-center p-6">
         <div className="text-center">
-          <div className="w-24 h-24 border-4 border-orange rounded-full flex items-center justify-center mx-auto mb-8 check-pop">
-            <Check className="w-12 h-12 text-orange" strokeWidth={3} />
+          <div className="w-24 h-24 border-4 border-primary-container flex items-center justify-center mx-auto mb-8">
+            <Check className="w-12 h-12 text-primary-container" strokeWidth={3} />
           </div>
-          <h1 className="font-heading text-3xl font-bold text-svc-white mb-2">Thanks!</h1>
-          <p className="text-svc-white/60 font-mono text-sm">Your feedback was received</p>
+          <p className="font-mono text-xs text-on-surface-variant uppercase tracking-widest mb-4">
+            FEEDBACK / RECEIVED
+          </p>
+          <h1 className="font-heading text-5xl uppercase tracking-tighter leading-none text-on-surface">
+            Thanks!
+          </h1>
+          <p className="text-on-surface-variant font-mono text-sm mt-3">
+            Your feedback was sent to the team
+          </p>
         </div>
       </div>
     )
   }
 
   return (
-    <div className="min-h-screen bg-background flex flex-col">
+    <div className="h-dvh bg-background flex flex-col">
       {/* Header */}
-      <header className="bg-black text-svc-white safe-top">
-        <div className="max-w-lg mx-auto flex items-center h-14 px-4">
-          <Link
-            href="/home"
-            className="mr-4 min-h-[48px] min-w-[48px] flex items-center justify-center -ml-3"
-          >
-            <ArrowLeft className="w-6 h-6" />
+      <header className="bg-background safe-top border-b-0">
+        <div className="max-w-lg mx-auto flex items-center h-16 px-6 gap-4">
+          <Link href="/home" className="h-11 w-11 flex items-center justify-center text-on-surface-variant hover:text-on-surface -ml-2">
+            <ArrowLeft className="w-5 h-5" />
           </Link>
-          <h1 className="font-heading text-2xl font-bold uppercase tracking-wide">
-            App Feedback
-          </h1>
+          <div>
+            <p className="font-mono text-[10px] text-on-surface-variant uppercase tracking-widest">
+              COMMAND CENTER
+            </p>
+            <p className="font-heading text-sm uppercase tracking-wide text-on-surface leading-none mt-0.5">
+              App Feedback
+            </p>
+          </div>
         </div>
+        <div className="h-1 bg-surface-container-low w-full" />
       </header>
 
-      <main className="flex-1 max-w-lg mx-auto w-full px-4 py-8 flex flex-col gap-8">
-        <p className="text-grey text-sm font-sans leading-relaxed">
-          Help us improve Command Center. Your input goes directly to the team.
-        </p>
+      <main className="flex-1 overflow-y-auto max-w-lg mx-auto w-full px-6 pt-8 pb-4 flex flex-col gap-8">
+        <div>
+          <h1 className="font-heading text-5xl uppercase tracking-tighter leading-[0.9] text-on-surface mb-2">
+            HOW&apos;S THE<br />APP?
+          </h1>
+          <p className="font-mono text-xs text-on-surface-variant uppercase tracking-widest">
+            Your input goes directly to the team
+          </p>
+        </div>
 
         {/* Feeling selector */}
         <div>
-          <p className="font-mono text-xs font-bold uppercase tracking-widest text-grey mb-4">
-            How's the app feeling?
+          <p className="font-mono text-[10px] text-on-surface-variant uppercase tracking-widest mb-4">
+            Select your experience
           </p>
           <div className="flex gap-3">
             {feelings.map(({ id, icon: Icon, label }) => (
               <button
                 key={id}
                 onClick={() => setFeeling(id)}
-                className={`flex-1 flex flex-col items-center justify-center gap-2 h-20 border-2 transition-all btn-press ${
+                className={`flex-1 flex flex-col items-center justify-center gap-2 h-20 border-2 transition-colors ${
                   feeling === id
-                    ? 'border-orange bg-orange/10'
-                    : 'border-border hover:border-grey'
+                    ? 'border-primary-container bg-surface-container text-primary-container'
+                    : 'border-outline-variant text-on-surface-variant hover:border-on-surface-variant'
                 }`}
               >
-                <Icon
-                  className={`w-5 h-5 ${feeling === id ? 'text-orange' : 'text-grey'}`}
-                  strokeWidth={1.5}
-                />
-                <span
-                  className={`font-heading text-sm font-bold uppercase tracking-wide ${
-                    feeling === id ? 'text-orange' : 'text-grey'
-                  }`}
-                >
+                <Icon className="w-5 h-5" strokeWidth={1.5} />
+                <span className="font-heading text-sm uppercase tracking-wide">
                   {label}
                 </span>
               </button>
@@ -99,27 +105,32 @@ export default function FeedbackPage() {
           </div>
         </div>
 
-        {/* Feedback text */}
+        {/* Feedback textarea */}
         <div className="flex-1 flex flex-col">
-          <p className="font-mono text-xs font-bold uppercase tracking-widest text-grey mb-4">
+          <p className="font-mono text-[10px] text-on-surface-variant uppercase tracking-widest mb-4">
             Tell us more
           </p>
-          <Textarea
-            value={feedbackText}
-            onChange={(e) => setFeedbackText(e.target.value)}
-            placeholder="What's working? What's not? What's missing?"
-            className="flex-1 min-h-[160px] bg-card border-border text-black placeholder:text-grey text-base leading-relaxed resize-none"
-          />
+          <div className="flex flex-1 bg-secondary-fixed">
+            <div className="w-2 shrink-0 bg-primary-container" />
+            <textarea
+              value={feedbackText}
+              onChange={(e) => setFeedbackText(e.target.value)}
+              placeholder="What's working? What's not? What's missing?"
+              className="flex-1 p-4 bg-transparent text-on-secondary-fixed placeholder:text-on-secondary-fixed/40 text-base leading-relaxed resize-none focus:outline-none min-h-40"
+            />
+          </div>
         </div>
+      </main>
 
-        <Button
+      <div className="shrink-0 safe-bottom">
+        <button
           onClick={handleSubmit}
           disabled={!feeling || !feedbackText.trim() || isSubmitting}
-          className="w-full h-14 bg-black hover:bg-black/90 text-svc-white font-heading text-xl font-bold uppercase tracking-wide disabled:opacity-40 btn-press"
+          className="w-full h-24 bg-primary-container hover:bg-primary text-on-primary-container font-heading text-3xl uppercase tracking-tighter disabled:opacity-30 transition-colors"
         >
-          {isSubmitting ? 'Sending...' : 'Send Feedback'}
-        </Button>
-      </main>
+          {isSubmitting ? 'SENDING…' : 'SEND →'}
+        </button>
+      </div>
     </div>
   )
 }

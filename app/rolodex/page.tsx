@@ -3,7 +3,7 @@
 import { useState } from 'react'
 import { BottomNav } from '@/components/bottom-nav'
 import { contacts, type Contact } from '@/lib/data'
-import { Search, Phone, Mail } from 'lucide-react'
+import { Search } from 'lucide-react'
 
 const roleOrder: Contact['role'][] = ['PM', 'Super', 'Worker', 'Admin']
 const roleLabels: Record<Contact['role'], string> = {
@@ -14,116 +14,128 @@ const roleLabels: Record<Contact['role'], string> = {
 }
 
 function getInitials(name: string): string {
-  return name
-    .split(' ')
-    .map((n) => n[0])
-    .join('')
-    .slice(0, 2)
-    .toUpperCase()
+  return name.split(' ').map(n => n[0]).join('').slice(0, 2).toUpperCase()
 }
 
 export default function RolodexPage() {
   const [search, setSearch] = useState('')
 
   const filtered = contacts.filter(
-    (c) =>
+    c =>
       c.name.toLowerCase().includes(search.toLowerCase()) ||
       c.role.toLowerCase().includes(search.toLowerCase())
   )
 
-  const grouped = roleOrder.reduce(
-    (acc, role) => {
-      const group = filtered.filter((c) => c.role === role)
-      if (group.length > 0) acc[role] = group
-      return acc
-    },
-    {} as Record<string, Contact[]>
-  )
+  const grouped = roleOrder.reduce((acc, role) => {
+    const group = filtered.filter(c => c.role === role)
+    if (group.length > 0) acc[role] = group
+    return acc
+  }, {} as Record<string, Contact[]>)
 
   return (
     <div className="min-h-screen bg-background flex flex-col">
       {/* Header */}
-      <header className="bg-black text-svc-white safe-top">
-        <div className="max-w-lg mx-auto flex items-center justify-between h-14 px-4">
-          <h1 className="font-heading text-3xl font-bold text-orange tracking-tight">SVC</h1>
-          <span className="font-heading text-lg font-bold uppercase tracking-wide text-svc-white">
-            Rolodex
-          </span>
+      <header className="bg-background safe-top">
+        <div className="max-w-lg mx-auto flex items-center justify-between h-16 px-6">
+          <img src="/logo.png" alt="SVC Logo" className="h-10 w-auto" />
+          <div className="text-right">
+            <p className="font-mono text-[10px] text-on-surface-variant uppercase tracking-widest">
+              COMMAND CENTER
+            </p>
+            <p className="font-heading text-sm uppercase tracking-wide text-on-surface leading-none mt-0.5">
+              Rolodex
+            </p>
+          </div>
         </div>
+        <div className="h-1 bg-surface-container-low w-full" />
       </header>
 
       <main className="flex-1 max-w-lg mx-auto w-full pb-24">
-        {/* Sticky Search */}
-        <div className="sticky top-0 bg-background border-b border-border px-4 py-3 z-10">
+        {/* Sticky search */}
+        <div className="sticky top-0 bg-background px-6 py-3 z-10">
           <div className="relative">
-            <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-grey" />
+            <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-on-surface-variant" />
             <input
               type="search"
-              placeholder="Search by name or role..."
+              placeholder="Search by name or role…"
               value={search}
-              onChange={(e) => setSearch(e.target.value)}
-              className="w-full h-12 pl-11 pr-4 bg-card border border-border text-black placeholder:text-grey font-sans text-sm focus:outline-none focus:border-orange transition-colors"
+              onChange={e => setSearch(e.target.value)}
+              className="w-full h-12 pl-11 pr-4 bg-surface-container text-on-surface placeholder:text-on-surface-variant border border-outline-variant font-sans text-sm focus:outline-none focus:border-primary-container transition-colors"
             />
           </div>
         </div>
 
-        {/* Contact Groups */}
-        <div className="px-4 py-6 space-y-8">
+        {/* Contact groups */}
+        <div className="px-4 py-4 space-y-8">
           {(Object.entries(grouped) as [Contact['role'], Contact[]][]).map(([role, group]) => (
             <div key={role}>
               {/* Section header */}
-              <div className="flex items-center gap-3 mb-3">
-                <span className="font-mono text-xs uppercase tracking-widest text-grey whitespace-nowrap">
+              <div className="flex items-center gap-3 mb-3 px-2">
+                <span className="font-mono text-[10px] uppercase tracking-widest text-on-surface-variant whitespace-nowrap">
                   {roleLabels[role]}
                 </span>
-                <span className="font-mono text-xs text-grey/40">({group.length})</span>
-                <div className="flex-1 h-px bg-border" />
+                <span className="font-mono text-[10px] text-on-surface-variant/40">({group.length})</span>
+                <div className="flex-1 h-px bg-surface-container-low" />
               </div>
 
               {/* Contact cards */}
-              <div className="divide-y divide-border/40">
-                {group.map((contact) => (
-                  <div
-                    key={contact.id}
-                    className="bg-card flex items-center gap-4 py-4 hover:bg-muted/40 transition-colors"
-                  >
-                    {/* Initials avatar */}
-                    <div className="w-11 h-11 bg-black flex-shrink-0 flex items-center justify-center">
-                      <span className="font-heading text-sm font-bold text-orange tracking-wide">
-                        {getInitials(contact.name)}
-                      </span>
-                    </div>
+              <div className="flex flex-col gap-px">
+                {group.map(contact => (
+                  <div key={contact.id} className="bg-surface-container-low">
+                    <div className="flex items-stretch min-h-18">
+                      {/* Avatar block */}
+                      <div className="w-16 bg-surface-container-high shrink-0 flex items-center justify-center">
+                        <span className="font-heading text-xl text-primary-container tracking-wide">
+                          {getInitials(contact.name)}
+                        </span>
+                      </div>
 
-                    {/* Name + role */}
-                    <div className="flex-1 min-w-0">
-                      <p className="font-heading text-lg font-bold text-black leading-tight truncate">
-                        {contact.name}
-                      </p>
-                      <p className="font-mono text-xs text-grey uppercase tracking-wide mt-0.5">
-                        {roleLabels[role]}
-                      </p>
-                    </div>
+                      {/* Info */}
+                      <div className="flex-1 px-4 py-3 min-w-0 flex flex-col justify-center gap-2">
+                        <p className="font-heading text-xl uppercase tracking-tight text-on-surface leading-tight truncate">
+                          {contact.name}
+                        </p>
+                        <div className="flex items-center gap-2 flex-wrap">
+                          <div className="inline-flex items-center gap-1.5 h-6 px-3 bg-tertiary-container">
+                            <span
+                              className="material-symbols-outlined text-xs text-on-tertiary-container"
+                              style={{ fontVariationSettings: "'FILL' 1", fontSize: '14px' }}
+                            >
+                              badge
+                            </span>
+                            <span className="font-mono text-[9px] text-on-tertiary-container uppercase tracking-wider">
+                              {contact.role}
+                            </span>
+                          </div>
+                          {contact.phone && (
+                            <span className="font-mono text-[10px] text-on-surface-variant uppercase tracking-widest">
+                              {contact.phone}
+                            </span>
+                          )}
+                        </div>
+                      </div>
 
-                    {/* Action buttons */}
-                    <div className="flex items-center gap-0.5 flex-shrink-0">
-                      {contact.phone && (
-                        <a
-                          href={`tel:${contact.phone}`}
-                          className="w-11 h-11 flex items-center justify-center text-grey hover:text-orange hover:bg-orange/10 transition-colors"
-                          aria-label={`Call ${contact.name}`}
-                        >
-                          <Phone className="w-4 h-4" strokeWidth={1.5} />
-                        </a>
-                      )}
-                      {contact.email && (
-                        <a
-                          href={`mailto:${contact.email}`}
-                          className="w-11 h-11 flex items-center justify-center text-grey hover:text-orange hover:bg-orange/10 transition-colors"
-                          aria-label={`Email ${contact.name}`}
-                        >
-                          <Mail className="w-4 h-4" strokeWidth={1.5} />
-                        </a>
-                      )}
+                      {/* Actions */}
+                      <div className="flex flex-col items-stretch shrink-0">
+                        {contact.phone && (
+                          <a
+                            href={`tel:${contact.phone}`}
+                            className="flex-1 w-14 flex items-center justify-center bg-surface-container text-on-surface-variant hover:bg-primary-container hover:text-on-primary-container transition-colors border-b border-surface-container-low"
+                            aria-label={`Call ${contact.name}`}
+                          >
+                            <span className="material-symbols-outlined" style={{ fontSize: '20px' }}>call</span>
+                          </a>
+                        )}
+                        {contact.email && (
+                          <a
+                            href={`mailto:${contact.email}`}
+                            className="flex-1 w-14 flex items-center justify-center bg-surface-container text-on-surface-variant hover:bg-primary-container hover:text-on-primary-container transition-colors"
+                            aria-label={`Email ${contact.name}`}
+                          >
+                            <span className="material-symbols-outlined" style={{ fontSize: '20px' }}>mail</span>
+                          </a>
+                        )}
+                      </div>
                     </div>
                   </div>
                 ))}
@@ -133,7 +145,9 @@ export default function RolodexPage() {
 
           {Object.keys(grouped).length === 0 && (
             <div className="text-center py-20">
-              <p className="text-grey font-mono text-sm">No contacts found</p>
+              <p className="font-mono text-xs text-on-surface-variant uppercase tracking-widest">
+                No contacts found
+              </p>
             </div>
           )}
         </div>

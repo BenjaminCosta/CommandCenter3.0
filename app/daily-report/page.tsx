@@ -3,12 +3,12 @@
 import { useState, useEffect } from 'react'
 import { useRouter } from 'next/navigation'
 import Link from 'next/link'
-import { Button } from '@/components/ui/button'
-import { Textarea } from '@/components/ui/textarea'
 import { workers, jobs } from '@/lib/data'
-import { ArrowLeft, Camera, Check, X } from 'lucide-react'
+import { ArrowLeft, Camera } from 'lucide-react'
 
 type Step = 1 | 2 | 3
+
+const PROGRESS = { 1: 'w-1/3', 2: 'w-2/3', 3: 'w-full' } as const
 
 export default function DailyReportPage() {
   const router = useRouter()
@@ -23,9 +23,8 @@ export default function DailyReportPage() {
   const assignedJob = jobs.find(j => j.id === worker.assignedJobId)
 
   const handleNext = () => {
-    if (step === 1 && workCompleted.trim()) {
-      setStep(2)
-    } else if (step === 2 && hasIssues !== null) {
+    if (step === 1 && workCompleted.trim()) setStep(2)
+    else if (step === 2 && hasIssues !== null) {
       if (hasIssues && !issueDetails.trim()) return
       setStep(3)
     }
@@ -33,36 +32,30 @@ export default function DailyReportPage() {
 
   const handleSubmit = () => {
     setIsSubmitting(true)
-    setTimeout(() => {
-      setShowSuccess(true)
-    }, 300)
+    setTimeout(() => setShowSuccess(true), 300)
   }
 
-  const handleSkipPhoto = () => {
-    handleSubmit()
-  }
-
-  // Auto-navigate after success
   useEffect(() => {
     if (showSuccess) {
-      const timer = setTimeout(() => {
-        router.push('/home')
-      }, 1500)
-      return () => clearTimeout(timer)
+      const t = setTimeout(() => router.push('/home'), 1500)
+      return () => clearTimeout(t)
     }
   }, [showSuccess, router])
 
   if (showSuccess) {
     return (
-      <div className="min-h-screen bg-black flex flex-col items-center justify-center p-6 fade-in">
+      <div className="min-h-screen bg-background flex flex-col items-center justify-center p-6">
         <div className="text-center">
-          <div className="w-28 h-28 border-4 border-orange rounded-full flex items-center justify-center mx-auto mb-8 check-pop">
-            <Check className="w-14 h-14 text-orange" strokeWidth={3} />
+          <div className="w-28 h-28 border-4 border-primary-container flex items-center justify-center mx-auto mb-8">
+            <span className="material-symbols-outlined text-6xl text-primary-container" style={{fontVariationSettings: "'FILL' 1"}}>check_circle</span>
           </div>
-          <h1 className="font-heading text-4xl font-bold text-svc-white mb-3">
-            Report Submitted
+          <p className="font-mono text-xs text-on-surface-variant uppercase tracking-widest mb-4">
+            DAILY REPORT / SUBMITTED
+          </p>
+          <h1 className="font-heading text-5xl uppercase tracking-tighter leading-none text-on-surface mb-3">
+            Report Sent
           </h1>
-          <p className="text-svc-white/70 font-heading text-xl">
+          <p className="text-on-surface-variant font-mono text-sm">
             {assignedJob?.name}
           </p>
         </div>
@@ -70,141 +63,148 @@ export default function DailyReportPage() {
     )
   }
 
+  const stepLabel = ['WORK SUMMARY', 'ISSUES', 'PHOTO'][step - 1]
+  const canNext =
+    (step === 1 && workCompleted.trim().length > 0) ||
+    (step === 2 && hasIssues !== null && !(hasIssues && !issueDetails.trim()))
+
   return (
-    <div className="min-h-screen bg-background flex flex-col">
-      {/* Header */}
-      <header className="bg-black text-svc-white safe-top">
-        <div className="max-w-lg mx-auto flex items-center h-14 px-4">
-          <Link href="/home" className="mr-4 min-h-[48px] min-w-[48px] flex items-center justify-center -ml-3">
-            <ArrowLeft className="w-6 h-6" />
+    <div className="h-dvh bg-background flex flex-col">
+      {/* Fixed header */}
+      <header className="sticky top-0 z-50 bg-background safe-top shrink-0">
+        <div className="max-w-lg mx-auto flex items-center h-16 px-6 gap-4">
+          <Link href="/home" className="h-11 w-11 flex items-center justify-center text-on-surface-variant hover:text-on-surface -ml-2">
+            <ArrowLeft className="w-5 h-5" />
           </Link>
-          <h1 className="font-heading text-2xl font-bold uppercase tracking-wide">
-            Daily Report
-          </h1>
+          <div className="flex-1">
+            <p className="font-mono text-[10px] text-on-surface-variant uppercase tracking-widest">
+              DAILY REPORT / STAGE {String(step).padStart(2, '0')}
+            </p>
+            <p className="font-heading text-sm uppercase tracking-wide text-on-surface leading-none mt-0.5">
+              {stepLabel}
+            </p>
+          </div>
+          <span className="font-mono text-xs text-on-surface-variant">{step}/3</span>
+        </div>
+        {/* Progress bar */}
+        <div className="h-2 bg-surface-container-low w-full">
+          <div className={`h-full bg-primary-container transition-all duration-300 ${PROGRESS[step]}`} />
         </div>
       </header>
 
-      {/* Progress Indicator */}
-      <div className="bg-card border-b border-border">
-        <div className="max-w-lg mx-auto px-4 py-3">
-          <div className="flex items-center justify-between">
-            <span className="font-mono text-sm text-muted-foreground">{step} of 3</span>
-            <div className="flex gap-2">
-              {[1, 2, 3].map((s) => (
-                <div
-                  key={s}
-                  className={`w-8 h-1 ${s <= step ? 'bg-orange' : 'bg-muted'}`}
-                />
-              ))}
-            </div>
-          </div>
-        </div>
-      </div>
+      {/* Scrollable body */}
+      <main className="flex-1 overflow-y-auto max-w-lg mx-auto w-full flex flex-col">
 
-      <main className="flex-1 max-w-lg mx-auto w-full px-4 py-8 flex flex-col">
         {/* Step 1: Work Completed */}
         {step === 1 && (
-          <div className="flex-1 flex flex-col">
-            <h2 className="font-heading text-2xl font-bold text-black mb-6">
-              What did you work on today?
-            </h2>
-            <Textarea
-              value={workCompleted}
-              onChange={(e) => setWorkCompleted(e.target.value)}
-              placeholder="Describe the work completed..."
-              className="flex-1 min-h-[200px] bg-card border-border text-black placeholder:text-grey text-lg leading-relaxed resize-none"
-            />
-            <Button
-              onClick={handleNext}
-              disabled={!workCompleted.trim()}
-              className="mt-6 w-full h-14 bg-orange hover:bg-orange/90 text-svc-white font-heading text-xl font-bold uppercase tracking-wide disabled:opacity-40 btn-press"
-            >
-              Next
-            </Button>
+          <div className="flex-1 flex flex-col px-6 pt-8">
+            <h1 className="font-heading text-5xl uppercase tracking-tighter leading-[0.9] text-on-surface mb-2">
+              WHAT DID<br />YOU DO<br />TODAY?
+            </h1>
+            <p className="font-mono text-xs text-on-surface-variant uppercase tracking-widest mb-8">
+              {assignedJob?.name ?? 'Current assignment'}
+            </p>
+            {/* Cream textarea panel */}
+            <div className="flex bg-secondary-fixed">
+              <div className="w-2 shrink-0 bg-primary-container" />
+              <textarea
+                value={workCompleted}
+                onChange={(e) => setWorkCompleted(e.target.value)}
+                placeholder="Describe the work completed…"
+                className="flex-1 p-4 bg-transparent text-on-secondary-fixed placeholder:text-on-secondary-fixed/40 text-base leading-relaxed resize-none focus:outline-none min-h-28"
+              />
+            </div>
           </div>
         )}
 
         {/* Step 2: Issues */}
         {step === 2 && (
-          <div className="flex-1 flex flex-col">
-            <h2 className="font-heading text-2xl font-bold text-black mb-8">
-              Any issues to report?
-            </h2>
-            
-            <div className="flex gap-4 mb-6">
+          <div className="flex-1 flex flex-col px-6 pt-8">
+            <h1 className="font-heading text-5xl uppercase tracking-tighter leading-[0.9] text-on-surface mb-8">
+              ANY<br />ISSUES?
+            </h1>
+            <div className="flex gap-4 mb-8">
               <button
                 onClick={() => setHasIssues(false)}
-                className={`flex-1 h-20 flex items-center justify-center gap-3 border-2 transition-colors btn-press ${
-                  hasIssues === false 
-                    ? 'bg-green/10 border-green text-green' 
-                    : 'border-border text-grey hover:border-grey'
+                className={`flex-1 h-20 flex items-center justify-center gap-3 border-2 transition-colors ${
+                  hasIssues === false
+                    ? 'bg-surface-container border-primary-container text-primary-container'
+                    : 'border-outline-variant text-on-surface-variant hover:border-on-surface-variant'
                 }`}
               >
-                <X className="w-6 h-6" />
-                <span className="font-heading text-xl font-bold uppercase">No</span>
+                <span className="material-symbols-outlined text-xl">close</span>
+                <span className="font-heading text-xl uppercase tracking-wide">No</span>
               </button>
               <button
                 onClick={() => setHasIssues(true)}
-                className={`flex-1 h-20 flex items-center justify-center gap-3 border-2 transition-colors btn-press ${
-                  hasIssues === true 
-                    ? 'bg-red/10 border-red text-red' 
-                    : 'border-border text-grey hover:border-grey'
+                className={`flex-1 h-20 flex items-center justify-center gap-3 border-2 transition-colors ${
+                  hasIssues === true
+                    ? 'bg-surface-container border-red text-red'
+                    : 'border-outline-variant text-on-surface-variant hover:border-on-surface-variant'
                 }`}
               >
-                <Check className="w-6 h-6" />
-                <span className="font-heading text-xl font-bold uppercase">Yes</span>
+                <span className="material-symbols-outlined text-xl">check</span>
+                <span className="font-heading text-xl uppercase tracking-wide">Yes</span>
               </button>
             </div>
-
             {hasIssues && (
-              <div className="flex-1 fade-in">
-                <Textarea
+              <div className="flex flex-1 bg-secondary-fixed">
+                <div className="w-2 shrink-0 bg-red" />
+                <textarea
                   value={issueDetails}
                   onChange={(e) => setIssueDetails(e.target.value)}
-                  placeholder="Describe the issue..."
-                  className="min-h-[150px] bg-card border-border text-black placeholder:text-grey text-lg leading-relaxed resize-none"
+                  placeholder="Describe the issue…"
+                  className="flex-1 p-4 bg-transparent text-on-secondary-fixed placeholder:text-on-secondary-fixed/40 text-base leading-relaxed resize-none focus:outline-none min-h-36"
                 />
               </div>
             )}
-
-            <Button
-              onClick={handleNext}
-              disabled={hasIssues === null || (hasIssues && !issueDetails.trim())}
-              className="mt-6 w-full h-14 bg-orange hover:bg-orange/90 text-svc-white font-heading text-xl font-bold uppercase tracking-wide disabled:opacity-40 btn-press"
-            >
-              Next
-            </Button>
           </div>
         )}
 
         {/* Step 3: Photo */}
         {step === 3 && (
-          <div className="flex-1 flex flex-col">
-            <h2 className="font-heading text-2xl font-bold text-black mb-6">
-              Add a photo (optional)
-            </h2>
-            
+          <div className="flex-1 flex flex-col px-6 pt-8">
+            <h1 className="font-heading text-5xl uppercase tracking-tighter leading-[0.9] text-on-surface mb-2">
+              ADD A<br />PHOTO
+            </h1>
+            <p className="font-mono text-xs text-on-surface-variant uppercase tracking-widest mb-8">
+              Optional — attach site progress photo
+            </p>
             <button
               onClick={handleSubmit}
-              className="w-full aspect-[4/3] flex flex-col items-center justify-center border-2 border-dashed border-grey bg-muted hover:border-orange transition-colors mb-6 btn-press"
+              className="w-full aspect-4/3 flex flex-col items-center justify-center border border-dashed border-outline-variant bg-surface-container-low hover:border-primary-container transition-colors"
             >
-              <Camera className="w-12 h-12 text-grey mb-3" />
-              <span className="text-lg text-grey">Tap to take photo</span>
+              <Camera className="w-12 h-12 text-on-surface-variant mb-3" strokeWidth={1} />
+              <span className="font-mono text-xs text-on-surface-variant uppercase tracking-widest">
+                TAP TO CAPTURE
+              </span>
             </button>
-
-            <div className="mt-auto space-y-3">
-              <Button
-                onClick={handleSkipPhoto}
-                disabled={isSubmitting}
-                variant="outline"
-                className="w-full h-14 border-2 border-black text-black font-heading text-xl font-bold uppercase tracking-wide hover:bg-black/5 btn-press"
-              >
-                {isSubmitting ? 'Submitting...' : 'Skip & Submit'}
-              </Button>
-            </div>
           </div>
         )}
       </main>
+
+      {/* Fixed footer CTA */}
+      <div className="shrink-0 safe-bottom">
+        {step < 3 ? (
+          <button
+            onClick={handleNext}
+            disabled={!canNext}
+            className="w-full h-20 bg-primary-container hover:bg-primary text-on-primary-container font-heading text-3xl uppercase tracking-widest disabled:opacity-30 transition-none active:scale-[0.98] flex items-center justify-center gap-4"
+          >
+            NEXT
+            <span className="material-symbols-outlined text-3xl">arrow_forward</span>
+          </button>
+        ) : (
+          <button
+            onClick={handleSubmit}
+            disabled={isSubmitting}
+            className="w-full h-20 bg-primary-container hover:bg-primary text-on-primary-container font-heading text-3xl uppercase tracking-widest disabled:opacity-50 transition-none active:scale-[0.98] flex items-center justify-center gap-4"
+          >
+            {isSubmitting ? 'SENDING…' : 'SUBMIT'}
+            {!isSubmitting && <span className="material-symbols-outlined text-3xl">send</span>}
+          </button>
+        )}
+      </div>
     </div>
   )
 }

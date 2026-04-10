@@ -28,8 +28,9 @@ export function BottomNav({ active }: BottomNavProps) {
   const navItems = isAdmin ? [...baseItems, adminItem] : baseItems
 
   return (
-    <nav className="fixed bottom-0 left-0 right-0 bg-svc-white border-t border-border safe-bottom">
-      <div className="max-w-lg mx-auto flex items-center justify-around h-16">
+    <nav className="fixed bottom-0 left-0 right-0 bg-background safe-bottom z-50">
+      <div className="bg-surface-container-low h-2 w-full" />
+      <div className="max-w-lg mx-auto flex items-stretch justify-around h-16">
         {navItems.map((item) => {
           const Icon = item.icon
           const isActive = active === item.id
@@ -37,22 +38,21 @@ export function BottomNav({ active }: BottomNavProps) {
             <Link
               key={item.id}
               href={item.href}
-              className="relative flex flex-col items-center justify-center gap-1 min-h-12 min-w-16 px-4"
+              className={`flex flex-col items-center justify-center gap-1 w-full h-full transition-colors ${
+                isActive ? 'bg-surface-container-low' : 'hover:bg-surface-container'
+              }`}
             >
               <Icon
-                className={`w-5 h-5 ${isActive ? 'text-black' : 'text-grey'}`}
+                className={`w-5 h-5 ${isActive ? 'text-primary-container' : 'text-on-surface-variant'}`}
                 strokeWidth={1.5}
               />
               <span
-                className={`text-xs font-medium font-heading uppercase tracking-wide ${
-                  isActive ? 'text-black' : 'text-grey'
+                className={`text-[10px] font-mono uppercase tracking-widest ${
+                  isActive ? 'text-primary-container' : 'text-on-surface-variant'
                 }`}
               >
                 {item.label}
               </span>
-              {isActive && (
-                <span className="absolute bottom-0 left-1/2 -translate-x-1/2 w-8 h-0.5 bg-orange" />
-              )}
             </Link>
           )
         })}

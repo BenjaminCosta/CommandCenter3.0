@@ -6,16 +6,17 @@ interface HeaderProps {
 
 export function Header({ workerName, title }: HeaderProps) {
   return (
-    <header className="bg-black text-svc-white safe-top">
-      <div className="max-w-lg mx-auto flex items-center justify-between h-14 px-4">
-        <h1 className="font-heading text-3xl font-bold text-orange tracking-tight">SVC</h1>
+    <header className="bg-background text-on-surface safe-top">
+      <div className="max-w-lg mx-auto flex items-center justify-between h-16 px-6">
+        <img src="/logo.png" alt="SVC Logo" className="h-10 w-auto" />
         {workerName && (
-          <span className="text-sm font-medium text-svc-white">{workerName}</span>
+          <span className="font-mono text-xs font-medium text-on-surface-variant uppercase tracking-widest">{workerName}</span>
         )}
         {title && (
-          <span className="text-sm font-semibold uppercase tracking-wide text-svc-white">{title}</span>
+          <span className="font-mono text-xs font-semibold uppercase tracking-widest text-on-surface-variant">{title}</span>
         )}
       </div>
+      <div className="bg-surface-container-low h-1 w-full" />
     </header>
   )
 }

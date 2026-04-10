@@ -13,25 +13,25 @@ export default function JobDetailPage({ params }: { params: Promise<{ id: string
   const job = jobs.find(j => j.id === id)
   const [activeTab, setActiveTab] = useState<TabId>('timesheets')
 
-  if (!job) {
-    notFound()
-  }
+  if (!job) notFound()
 
   const timeEntries = getTimeEntriesForJob(job.id)
   const reports = getReportsForJob(job.id)
 
-  const statusBg = {
-    'IN PROGRESS': 'bg-green text-svc-white',
-    'PRE CONSTRUCTION': 'bg-grey text-svc-white',
-    'COMPLETED': 'bg-black text-svc-white',
-    'ALERT': 'bg-red text-svc-white',
-  }[job.status]
+  const statusBadgeMap: Record<string, string> = {
+    'IN PROGRESS': 'bg-green text-background',
+    'PRE CONSTRUCTION': 'bg-surface-container-high text-on-surface',
+    'COMPLETED': 'bg-surface-container-highest text-on-surface',
+    'ALERT': 'bg-red text-on-surface',
+  }
+  const freqBadgeMap: Record<string, string> = {
+    'DAILY': 'bg-surface-container-highest text-on-surface',
+    'HOURLY': 'bg-primary-container text-on-primary-container',
+    'WEEKLY': 'bg-secondary-container text-on-secondary-container',
+  }
 
-  const frequencyBg = {
-    'DAILY': 'bg-black text-svc-white',
-    'HOURLY': 'bg-orange text-svc-white',
-    'WEEKLY': 'bg-grey text-svc-white',
-  }[job.reportFrequency]
+  const statusBadge = statusBadgeMap[job.status] ?? 'bg-surface-container text-on-surface'
+  const freqBadge = freqBadgeMap[job.reportFrequency] ?? 'bg-surface-container text-on-surface'
 
   const tabs: { id: TabId; label: string }[] = [
     { id: 'timesheets', label: 'Timesheets' },
@@ -42,95 +42,105 @@ export default function JobDetailPage({ params }: { params: Promise<{ id: string
   return (
     <div className="min-h-screen bg-background flex flex-col">
       {/* Header */}
-      <header className="bg-black text-svc-white safe-top">
-        <div className="max-w-4xl mx-auto flex items-center h-14 px-4">
-          <Link href="/admin" className="mr-4 min-h-[48px] min-w-[48px] flex items-center justify-center -ml-3">
-            <ArrowLeft className="w-6 h-6" />
+      <header className="bg-background safe-top">
+        <div className="max-w-4xl mx-auto flex items-center h-16 px-6 gap-4">
+          <Link href="/admin" className="h-11 w-11 flex items-center justify-center text-on-surface-variant hover:text-on-surface -ml-2">
+            <ArrowLeft className="w-5 h-5" />
           </Link>
-          <h1 className="font-heading text-xl font-bold uppercase tracking-wide truncate">
-            {job.name}
-          </h1>
+          <div className="flex-1 min-w-0">
+            <p className="font-mono text-[10px] text-on-surface-variant uppercase tracking-widest">
+              ADMIN / JOB DETAIL
+            </p>
+            <p className="font-heading text-sm uppercase tracking-wide text-on-surface leading-none mt-0.5 truncate">
+              {job.name}
+            </p>
+          </div>
         </div>
+        <div className="h-1 bg-surface-container-low w-full" />
       </header>
 
-      <main className="flex-1 max-w-4xl mx-auto w-full px-4 py-8">
-        {/* Job Header Card */}
-        <div className="bg-card p-6 mb-8">
-          <div className="flex items-start justify-between gap-4 mb-5">
+      <main className="flex-1 max-w-4xl mx-auto w-full px-4 pt-6 pb-16">
+        {/* Job summary card */}
+        <div className="bg-surface-container-low p-6 mb-8">
+          <div className="flex items-start justify-between gap-4 mb-6">
             <div>
-              <h2 className="font-heading text-3xl font-bold text-black">{job.name}</h2>
-              <p className="text-muted-foreground flex items-center gap-2 mt-2">
-                <MapPin className="w-5 h-5" strokeWidth={1.5} />
+              <h1 className="font-heading text-3xl uppercase tracking-tighter text-on-surface leading-tight">
+                {job.name}
+              </h1>
+              <p className="text-on-surface-variant flex items-center gap-2 mt-2 text-sm">
+                <MapPin className="w-4 h-4 shrink-0" strokeWidth={1.5} />
                 {job.city}, {job.state}
               </p>
             </div>
-            <div className="flex flex-col items-end gap-2">
-              <span className={`px-2 py-1 text-xs font-mono font-medium uppercase ${statusBg}`}>
+            <div className="flex flex-col items-end gap-2 shrink-0">
+              <span className={`px-2 py-1 font-mono text-[10px] uppercase tracking-widest ${statusBadge}`}>
                 {job.status}
               </span>
-              <span className={`px-2 py-1 text-xs font-mono font-medium uppercase ${frequencyBg}`}>
+              <span className={`px-2 py-1 font-mono text-[10px] uppercase tracking-widest ${freqBadge}`}>
                 {job.reportFrequency}
               </span>
             </div>
           </div>
-          <div className="grid grid-cols-2 gap-6 text-base">
+          <div className="grid grid-cols-2 gap-6">
             <div>
-              <p className="text-muted-foreground text-sm">PM</p>
-              <p className="font-medium text-black mt-1">{job.pm}</p>
+              <p className="font-mono text-[10px] text-on-surface-variant uppercase tracking-widest mb-1">PM</p>
+              <p className="text-on-surface text-sm">{job.pm}</p>
             </div>
             {job.super && (
               <div>
-                <p className="text-muted-foreground text-sm">Super</p>
-                <p className="font-medium text-black mt-1">{job.super}</p>
+                <p className="font-mono text-[10px] text-on-surface-variant uppercase tracking-widest mb-1">Super</p>
+                <p className="text-on-surface text-sm">{job.super}</p>
               </div>
             )}
           </div>
         </div>
 
-        {/* Tabs - Orange underline style */}
-        <div className="flex gap-1 mb-8 border-b border-border">
+        {/* Tabs — orange underline style */}
+        <div className="flex gap-0 mb-8 border-b border-surface-container-low">
           {tabs.map(tab => (
             <button
               key={tab.id}
               onClick={() => setActiveTab(tab.id)}
-              className={`relative px-5 py-4 text-sm font-heading font-bold uppercase tracking-wide transition-colors min-h-[48px] ${
-                activeTab === tab.id
-                  ? 'text-black'
-                  : 'text-grey hover:text-black'
+              className={`relative px-5 py-4 font-heading text-sm uppercase tracking-wide transition-colors min-h-12 ${
+                activeTab === tab.id ? 'text-on-surface' : 'text-on-surface-variant hover:text-on-surface'
               }`}
             >
               {tab.label}
               {activeTab === tab.id && (
-                <span className="absolute bottom-0 left-0 right-0 h-0.5 bg-orange" />
+                <span className="absolute bottom-0 left-0 right-0 h-0.5 bg-primary-container" />
               )}
             </button>
           ))}
         </div>
 
-        {/* Tab Content */}
+        {/* Timesheets tab */}
         {activeTab === 'timesheets' && (
-          <div className="space-y-4">
+          <div className="space-y-3">
             {timeEntries.length === 0 ? (
-              <p className="text-center text-muted-foreground py-12 text-lg">No timesheet entries yet.</p>
+              <p className="text-center font-mono text-xs text-on-surface-variant uppercase tracking-widest py-12">
+                No timesheet entries yet
+              </p>
             ) : (
               timeEntries.map(entry => (
-                <div key={entry.id} className="bg-card p-5 border-l-4 border-l-green">
-                  <div className="flex items-start justify-between">
+                <div key={entry.id} className="bg-surface-container-low border-l-4 border-l-green p-5">
+                  <div className="flex items-start justify-between gap-4">
                     <div>
-                      <p className="font-mono text-xs text-muted-foreground">{formatDate(entry.date)}</p>
-                      <p className="font-medium text-black flex items-center gap-2 mt-2">
-                        <User className="w-5 h-5 text-grey" strokeWidth={1.5} />
+                      <p className="font-mono text-[10px] text-on-surface-variant uppercase tracking-widest">
+                        {formatDate(entry.date)}
+                      </p>
+                      <p className="text-on-surface flex items-center gap-2 mt-2 text-sm">
+                        <User className="w-4 h-4 text-on-surface-variant shrink-0" strokeWidth={1.5} />
                         {entry.workerName}
                       </p>
-                      <p className="text-muted-foreground mt-3 flex items-center gap-2">
-                        <Clock className="w-5 h-5" strokeWidth={1.5} />
-                        {formatTime(entry.clockIn)} - {entry.clockOut ? formatTime(entry.clockOut) : 'Active'}
+                      <p className="text-on-surface-variant flex items-center gap-2 mt-2 text-sm">
+                        <Clock className="w-4 h-4 shrink-0" strokeWidth={1.5} />
+                        {formatTime(entry.clockIn)} — {entry.clockOut ? formatTime(entry.clockOut) : 'Active'}
                       </p>
                     </div>
                     {entry.hours && (
-                      <div className="text-right">
-                        <p className="font-heading text-3xl font-bold text-green">{entry.hours}</p>
-                        <p className="text-xs text-muted-foreground font-mono">hours</p>
+                      <div className="text-right shrink-0">
+                        <p className="font-heading text-3xl uppercase text-green">{entry.hours}</p>
+                        <p className="font-mono text-[10px] text-on-surface-variant uppercase tracking-widest">hours</p>
                       </div>
                     )}
                   </div>
@@ -140,26 +150,37 @@ export default function JobDetailPage({ params }: { params: Promise<{ id: string
           </div>
         )}
 
+        {/* Reports tab */}
         {activeTab === 'reports' && (
-          <div className="space-y-4">
+          <div className="space-y-3">
             {reports.length === 0 ? (
-              <p className="text-center text-muted-foreground py-12 text-lg">No reports submitted yet.</p>
+              <p className="text-center font-mono text-xs text-on-surface-variant uppercase tracking-widest py-12">
+                No reports submitted yet
+              </p>
             ) : (
               reports.map(report => (
-                <div 
-                  key={report.id} 
-                  className={`bg-card p-5 border-l-4 ${report.hasIssues ? 'border-l-red' : 'border-l-green'}`}
+                <div
+                  key={report.id}
+                  className={`bg-surface-container-low border-l-4 p-5 ${report.hasIssues ? 'border-l-red' : 'border-l-green'}`}
                 >
-                  <p className="font-mono text-xs text-muted-foreground">{formatDate(report.date)}</p>
-                  <p className="font-medium text-black flex items-center gap-2 mt-2">
-                    <User className="w-5 h-5 text-grey" strokeWidth={1.5} />
+                  <p className="font-mono text-[10px] text-on-surface-variant uppercase tracking-widest">
+                    {formatDate(report.date)}
+                  </p>
+                  <p className="text-on-surface flex items-center gap-2 mt-2 text-sm">
+                    <User className="w-4 h-4 text-on-surface-variant shrink-0" strokeWidth={1.5} />
                     {report.workerName}
                   </p>
-                  <p className="text-foreground mt-4 leading-relaxed">{report.workCompleted}</p>
+                  <p className="text-on-surface-variant text-sm mt-4 leading-relaxed">
+                    {report.workCompleted}
+                  </p>
                   {report.hasIssues && report.issueDetails && (
-                    <div className="mt-4 p-4 bg-red/5 border-l-4 border-l-red">
-                      <p className="text-xs font-mono text-red uppercase mb-2">Issue Reported</p>
-                      <p className="text-red leading-relaxed">{report.issueDetails}</p>
+                    <div className="mt-4 p-4 bg-surface-container border-l-4 border-l-red">
+                      <p className="font-mono text-[10px] text-red uppercase tracking-widest mb-2">
+                        ⚠ Issue Reported
+                      </p>
+                      <p className="text-on-surface-variant text-sm leading-relaxed">
+                        {report.issueDetails}
+                      </p>
                     </div>
                   )}
                 </div>
@@ -168,42 +189,41 @@ export default function JobDetailPage({ params }: { params: Promise<{ id: string
           </div>
         )}
 
+        {/* Info tab */}
         {activeTab === 'info' && (
-          <div className="bg-card p-6">
-            <div className="space-y-6">
+          <div className="bg-surface-container-low p-6 space-y-6">
+            <div>
+              <p className="font-mono text-[10px] text-on-surface-variant uppercase tracking-widest mb-1">Project Name</p>
+              <p className="font-heading text-xl uppercase tracking-tight text-on-surface">{job.name}</p>
+            </div>
+            <div>
+              <p className="font-mono text-[10px] text-on-surface-variant uppercase tracking-widest mb-1">Address</p>
+              <p className="text-on-surface text-sm">{job.address || `${job.city}, ${job.state}`}</p>
+            </div>
+            <div className="grid grid-cols-2 gap-6">
               <div>
-                <p className="text-xs text-muted-foreground font-mono uppercase">Project Name</p>
-                <p className="font-heading font-bold text-black text-xl mt-1">{job.name}</p>
+                <p className="font-mono text-[10px] text-on-surface-variant uppercase tracking-widest mb-1">Project Manager</p>
+                <p className="text-on-surface text-sm">{job.pm}</p>
+              </div>
+              {job.super && (
+                <div>
+                  <p className="font-mono text-[10px] text-on-surface-variant uppercase tracking-widest mb-1">Superintendent</p>
+                  <p className="text-on-surface text-sm">{job.super}</p>
+                </div>
+              )}
+            </div>
+            <div className="grid grid-cols-2 gap-6">
+              <div>
+                <p className="font-mono text-[10px] text-on-surface-variant uppercase tracking-widest mb-1">Status</p>
+                <span className={`inline-block px-2 py-1 font-mono text-[10px] uppercase tracking-widest mt-1 ${statusBadge}`}>
+                  {job.status}
+                </span>
               </div>
               <div>
-                <p className="text-xs text-muted-foreground font-mono uppercase">Address</p>
-                <p className="text-black mt-1">{job.address || `${job.city}, ${job.state}`}</p>
-              </div>
-              <div className="grid grid-cols-2 gap-6">
-                <div>
-                  <p className="text-xs text-muted-foreground font-mono uppercase">Project Manager</p>
-                  <p className="text-black mt-1">{job.pm}</p>
-                </div>
-                {job.super && (
-                  <div>
-                    <p className="text-xs text-muted-foreground font-mono uppercase">Superintendent</p>
-                    <p className="text-black mt-1">{job.super}</p>
-                  </div>
-                )}
-              </div>
-              <div className="grid grid-cols-2 gap-6">
-                <div>
-                  <p className="text-xs text-muted-foreground font-mono uppercase">Status</p>
-                  <span className={`inline-block px-2 py-1 text-xs font-mono font-medium uppercase mt-1 ${statusBg}`}>
-                    {job.status}
-                  </span>
-                </div>
-                <div>
-                  <p className="text-xs text-muted-foreground font-mono uppercase">Report Frequency</p>
-                  <span className={`inline-block px-2 py-1 text-xs font-mono font-medium uppercase mt-1 ${frequencyBg}`}>
-                    {job.reportFrequency}
-                  </span>
-                </div>
+                <p className="font-mono text-[10px] text-on-surface-variant uppercase tracking-widest mb-1">Report Frequency</p>
+                <span className={`inline-block px-2 py-1 font-mono text-[10px] uppercase tracking-widest mt-1 ${freqBadge}`}>
+                  {job.reportFrequency}
+                </span>
               </div>
             </div>
           </div>
