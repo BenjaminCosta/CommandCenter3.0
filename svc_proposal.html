@@ -1,0 +1,569 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Command Center — Modernization Proposal</title>
+<link href="https://fonts.googleapis.com/css2?family=Barlow:ital,wght@0,300;0,400;0,500;0,600;0,700;0,800;1,400&family=Barlow+Condensed:wght@400;600;700;800&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+:root {
+  --navy: #0d1f35;
+  --navy-mid: #162d47;
+  --navy-light: #1e3d5c;
+  --orange: #e07020;
+  --orange-light: #f08030;
+  --white: #f4f2ee;
+  --grey-light: #e8e4de;
+  --grey-mid: #a0967e;
+  --grey-dark: #4a4538;
+  --text: #1a1612;
+  --green: #2a6640;
+}
+*{margin:0;padding:0;box-sizing:border-box;}
+html{scroll-behavior:smooth;}
+body{background:var(--white);color:var(--text);font-family:'Barlow',sans-serif;font-size:15px;line-height:1.6;}
+
+/* COVER */
+.cover{background:var(--navy);min-height:100vh;display:flex;flex-direction:column;justify-content:space-between;padding:64px 80px;position:relative;overflow:hidden;}
+.cover::before{content:'';position:absolute;top:-200px;right:-200px;width:600px;height:600px;border-radius:50%;background:radial-gradient(circle,rgba(224,112,32,.1),transparent 65%);pointer-events:none;}
+.cover-top{display:flex;justify-content:space-between;align-items:flex-start;}
+.svc-logo{font-family:'Barlow Condensed',sans-serif;font-weight:800;font-size:26px;color:var(--orange);letter-spacing:3px;}
+.cover-tag{font-family:'IBM Plex Mono',monospace;font-size:10px;color:rgba(244,242,238,.28);letter-spacing:2px;text-align:right;line-height:1.9;text-transform:uppercase;}
+.cover-body{position:relative;z-index:1;}
+.cover-pre{font-family:'IBM Plex Mono',monospace;font-size:9px;color:var(--orange);letter-spacing:4px;text-transform:uppercase;margin-bottom:22px;display:flex;align-items:center;gap:12px;}
+.cover-pre::before{content:'';display:block;width:32px;height:1px;background:var(--orange);}
+.cover-h1{font-family:'Barlow Condensed',sans-serif;font-size:clamp(52px,8vw,90px);font-weight:800;color:var(--white);line-height:.92;letter-spacing:-1px;margin-bottom:28px;}
+.cover-h1 span{color:var(--orange);}
+.cover-sub{font-size:15px;color:rgba(244,242,238,.5);max-width:480px;line-height:1.75;font-weight:300;}
+.cover-bottom{display:flex;justify-content:space-between;align-items:flex-end;position:relative;z-index:1;}
+.cover-stats{display:flex;gap:48px;}
+.cover-stat-num{font-family:'Barlow Condensed',sans-serif;font-size:38px;font-weight:700;color:var(--white);line-height:1;}
+.cover-stat-label{font-size:9px;color:rgba(244,242,238,.35);text-transform:uppercase;letter-spacing:2px;margin-top:4px;}
+.cover-date{font-family:'IBM Plex Mono',monospace;font-size:9px;color:rgba(244,242,238,.2);letter-spacing:2px;}
+
+/* SECTIONS */
+.section{padding:72px 80px;border-bottom:1px solid var(--grey-light);}
+.section:last-child{border-bottom:none;}
+.section-dark{background:var(--navy);color:var(--white);}
+.section-mid{background:#f0ece4;}
+.section-pre{font-family:'IBM Plex Mono',monospace;font-size:9px;letter-spacing:4px;text-transform:uppercase;color:var(--orange);margin-bottom:10px;display:flex;align-items:center;gap:10px;}
+.section-pre::before{content:'';display:block;width:18px;height:1px;background:var(--orange);}
+.section-h2{font-family:'Barlow Condensed',sans-serif;font-size:clamp(32px,5vw,52px);font-weight:700;line-height:1;letter-spacing:-.5px;margin-bottom:12px;color:var(--navy);}
+.section-dark .section-h2{color:var(--white);}
+.section-lead{font-size:14px;color:var(--grey-dark);max-width:640px;margin-bottom:48px;line-height:1.75;font-weight:400;}
+.section-dark .section-lead{color:rgba(244,242,238,.48);}
+
+/* CURRENT STATE */
+.current-grid{display:grid;grid-template-columns:1fr 1fr;gap:3px;}
+.current-item{background:#f8f5f0;padding:28px 32px;border-left:3px solid var(--grey-light);}
+.current-item.problem{border-left-color:#c0392b;}
+.current-label{font-size:9px;font-family:'IBM Plex Mono',monospace;letter-spacing:2px;text-transform:uppercase;color:var(--grey-mid);margin-bottom:8px;}
+.current-item.problem .current-label{color:#c0392b;}
+.current-text{font-size:13px;color:var(--text);line-height:1.65;}
+
+/* FLOWS */
+.flow-grid{display:grid;grid-template-columns:1fr 1fr;gap:28px;}
+.flow-card{border:1px solid var(--grey-light);border-radius:4px;overflow:hidden;}
+.flow-card-header{background:var(--navy);padding:18px 24px;display:flex;justify-content:space-between;align-items:center;}
+.flow-card-title{font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:16px;letter-spacing:1px;text-transform:uppercase;color:var(--white);}
+.flow-card-badge{font-family:'IBM Plex Mono',monospace;font-size:9px;color:var(--orange);letter-spacing:1px;text-transform:uppercase;}
+.flow-step{display:flex;align-items:flex-start;gap:16px;padding:16px 24px;border-bottom:1px solid var(--grey-light);}
+.flow-step:last-child{border-bottom:none;}
+.flow-num{width:24px;height:24px;border-radius:50%;background:var(--navy);color:var(--white);font-size:10px;font-weight:700;display:flex;align-items:center;justify-content:center;flex-shrink:0;margin-top:1px;font-family:'IBM Plex Mono',monospace;}
+.flow-step-action{font-weight:600;font-size:13px;color:var(--navy);margin-bottom:2px;}
+.flow-step-desc{font-size:12px;color:var(--grey-mid);line-height:1.5;}
+.flow-tag{display:inline-block;padding:2px 8px;border-radius:2px;font-size:9px;font-family:'IBM Plex Mono',monospace;letter-spacing:1px;margin-top:5px;text-transform:uppercase;}
+.tag-o{background:rgba(224,112,32,.12);color:var(--orange);}
+.tag-g{background:rgba(42,102,64,.1);color:var(--green);}
+.tag-n{background:rgba(13,31,53,.08);color:var(--navy-light);}
+
+/* SCREENS */
+.screens-row{display:flex;gap:20px;overflow-x:auto;padding-bottom:12px;}
+.screen-wrap{flex-shrink:0;}
+.screen-mock{width:210px;border-radius:20px;overflow:hidden;border:5px solid var(--navy);background:#fff;box-shadow:0 20px 60px rgba(0,0,0,.15);}
+.screen-bar{background:var(--navy);padding:10px 14px;display:flex;align-items:center;gap:8px;}
+.screen-logo{width:22px;height:22px;background:var(--orange);border-radius:5px;display:flex;align-items:center;justify-content:center;font-weight:800;font-size:8px;color:#fff;font-family:'Barlow Condensed',sans-serif;letter-spacing:1px;}
+.screen-title{font-size:10px;font-weight:600;color:var(--white);font-family:'Barlow Condensed',sans-serif;letter-spacing:1px;}
+.screen-body{padding:14px;min-height:300px;}
+.screen-label{text-align:center;padding:8px 0 2px;font-size:9px;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:var(--grey-mid);font-family:'IBM Plex Mono',monospace;}
+
+/* mock elements */
+.m-greeting{font-size:10px;color:#999;margin-bottom:3px;}
+.m-name{font-size:15px;font-weight:700;color:var(--navy);margin-bottom:12px;font-family:'Barlow Condensed',sans-serif;letter-spacing:.5px;}
+.m-streak{display:flex;align-items:center;gap:6px;margin-bottom:12px;}
+.m-streak-fire{font-size:16px;}
+.m-streak-text{font-size:9px;color:var(--orange);font-weight:600;}
+.m-job{background:#f4f2ee;border-radius:8px;padding:10px 12px;margin-bottom:10px;border-left:3px solid var(--orange);}
+.m-job-name{font-size:10px;font-weight:700;color:var(--navy);}
+.m-job-sub{font-size:8px;color:#999;margin-top:2px;}
+.m-btn{width:100%;padding:12px;border-radius:8px;text-align:center;font-weight:700;font-size:12px;letter-spacing:1px;text-transform:uppercase;margin-bottom:7px;font-family:'Barlow Condensed',sans-serif;}
+.m-btn-p{background:var(--orange);color:#fff;}
+.m-btn-s{background:#f0ece4;color:var(--navy);border:1px solid #ddd;}
+.m-photo{width:100%;height:72px;background:#e8e4de;border-radius:8px;display:flex;align-items:center;justify-content:center;margin-bottom:8px;flex-direction:column;gap:3px;}
+.m-photo-icon{font-size:20px;}
+.m-photo-label{font-size:8px;color:#888;}
+.m-geo{display:inline-flex;align-items:center;gap:4px;padding:3px 8px;border-radius:20px;background:rgba(42,102,64,.1);color:var(--green);font-size:8px;font-weight:600;margin-bottom:10px;}
+.m-stats{display:flex;gap:6px;margin-bottom:10px;}
+.m-stat{flex:1;background:#f4f2ee;border-radius:6px;padding:8px 6px;text-align:center;}
+.m-stat-num{font-size:15px;font-weight:700;color:var(--navy);font-family:'Barlow Condensed',sans-serif;}
+.m-stat-label{font-size:7px;color:#999;text-transform:uppercase;letter-spacing:1px;}
+.m-score-ring{width:52px;height:52px;border-radius:50%;background:conic-gradient(var(--green) 0% 78%,#e8e4de 78% 100%);display:flex;align-items:center;justify-content:center;margin:0 auto 6px;position:relative;}
+.m-score-ring::before{content:'';position:absolute;width:38px;height:38px;background:#fff;border-radius:50%;}
+.m-score-num{position:relative;z-index:1;font-size:12px;font-weight:700;color:var(--navy);font-family:'Barlow Condensed',sans-serif;}
+.m-score-label{text-align:center;font-size:8px;color:#888;margin-bottom:10px;}
+.m-feed-item{display:flex;gap:7px;margin-bottom:9px;align-items:flex-start;}
+.m-feed-dot{width:5px;height:5px;border-radius:50%;background:var(--orange);flex-shrink:0;margin-top:4px;}
+.m-feed-text{font-size:9px;color:#555;line-height:1.4;}
+.m-feed-time{font-size:7px;color:#bbb;margin-top:1px;}
+.m-alert-job{background:#fff5f5;border-radius:8px;padding:10px 12px;margin-bottom:10px;border-left:3px solid #c0392b;}
+
+/* STACK */
+.stack-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:2px;}
+.stack-item{background:rgba(244,242,238,.04);border:1px solid rgba(244,242,238,.08);padding:28px 24px;}
+.stack-icon{font-size:26px;margin-bottom:12px;}
+.stack-name{font-family:'Barlow Condensed',sans-serif;font-size:18px;font-weight:700;color:var(--white);letter-spacing:.5px;margin-bottom:6px;}
+.stack-role{font-size:11px;color:rgba(244,242,238,.38);line-height:1.55;}
+
+/* TIMELINE */
+.timeline{max-width:660px;}
+.tl-phase{display:flex;gap:28px;margin-bottom:36px;position:relative;}
+.tl-phase:not(:last-child)::before{content:'';position:absolute;left:17px;top:34px;bottom:-36px;width:1px;background:var(--grey-light);}
+.tl-circle{width:34px;height:34px;border-radius:50%;background:var(--navy);color:var(--white);font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:13px;display:flex;align-items:center;justify-content:center;letter-spacing:1px;flex-shrink:0;}
+.tl-phase-label{font-family:'IBM Plex Mono',monospace;font-size:9px;letter-spacing:3px;color:var(--orange);text-transform:uppercase;margin-bottom:4px;}
+.tl-phase-title{font-family:'Barlow Condensed',sans-serif;font-size:22px;font-weight:700;color:var(--navy);margin-bottom:6px;letter-spacing:.5px;}
+.tl-duration{display:inline-block;padding:3px 10px;border-radius:2px;background:var(--grey-light);font-family:'IBM Plex Mono',monospace;font-size:9px;color:var(--grey-dark);letter-spacing:1px;text-transform:uppercase;margin-bottom:12px;}
+.tl-items{display:flex;flex-direction:column;gap:5px;}
+.tl-item{display:flex;align-items:center;gap:8px;font-size:13px;color:var(--grey-dark);}
+.tl-item::before{content:'';display:block;width:12px;height:1px;background:var(--grey-mid);flex-shrink:0;}
+
+/* FEATURES */
+.features-grid{display:grid;grid-template-columns:1fr 1fr;gap:2px;}
+.feature-card{background:rgba(244,242,238,.03);border:1px solid rgba(244,242,238,.07);padding:30px;position:relative;}
+.feature-num{font-family:'Barlow Condensed',sans-serif;font-size:44px;font-weight:800;color:rgba(224,112,32,.12);position:absolute;top:18px;right:22px;line-height:1;}
+.feature-icon{font-size:26px;margin-bottom:12px;}
+.feature-name{font-family:'Barlow Condensed',sans-serif;font-size:20px;font-weight:700;color:var(--white);letter-spacing:.5px;margin-bottom:8px;}
+.feature-desc{font-size:12px;color:rgba(244,242,238,.45);line-height:1.65;margin-bottom:12px;}
+.feature-value{font-size:11px;color:var(--orange-light);font-weight:500;display:flex;align-items:center;gap:6px;}
+.feature-value::before{content:'→';font-size:10px;}
+
+/* CLOSING */
+.closing{background:var(--navy);padding:72px 80px;display:flex;justify-content:space-between;align-items:flex-end;gap:40px;}
+.closing-h{font-family:'Barlow Condensed',sans-serif;font-size:clamp(36px,5vw,58px);font-weight:800;color:var(--white);line-height:.95;margin-bottom:16px;}
+.closing-h span{color:var(--orange);}
+.closing-sub{font-size:13px;color:rgba(244,242,238,.4);max-width:400px;line-height:1.75;}
+.closing-right{flex-shrink:0;text-align:right;}
+.closing-by{font-family:'IBM Plex Mono',monospace;font-size:9px;letter-spacing:3px;text-transform:uppercase;color:rgba(244,242,238,.25);margin-bottom:6px;}
+.closing-name{font-size:15px;font-weight:600;color:var(--white);}
+
+@media(max-width:900px){
+  .cover,.section,.closing{padding:40px;}
+  .current-grid,.flow-grid,.features-grid,.stack-grid{grid-template-columns:1fr;}
+  .closing{flex-direction:column;align-items:flex-start;}
+}
+</style>
+</head>
+<body>
+
+<!-- COVER -->
+<div class="cover">
+  <div class="cover-top">
+    <div class="svc-logo">SVC</div>
+    <div class="cover-tag">Command Center<br>Modernization Proposal<br>Confidential · 2026</div>
+  </div>
+  <div class="cover-body">
+    <div class="cover-pre">Field Operations Platform</div>
+    <h1 class="cover-h1">Command<br>Center <span>3.0</span><br>Rebuilt.</h1>
+    <p class="cover-sub">A modern web application that replaces the current AppSheet setup with a faster, cleaner, and more engaging platform — built field-first and designed to scale with SVC's growth.</p>
+  </div>
+  <div class="cover-bottom">
+    <div class="cover-stats">
+      <div><div class="cover-stat-num">3</div><div class="cover-stat-label">Phases</div></div>
+      <div><div class="cover-stat-num">6w</div><div class="cover-stat-label">Timeline</div></div>
+      <div><div class="cover-stat-num">MVP</div><div class="cover-stat-label">First Delivery</div></div>
+    </div>
+    <div class="cover-date">April 2026</div>
+  </div>
+</div>
+
+
+<!-- CURRENT STATE -->
+<div class="section">
+  <div class="section-pre">01 — Current State</div>
+  <h2 class="section-h2">Where Things Stand Today</h2>
+  <p class="section-lead">Command Center 3.0 runs on AppSheet with Google Sheets as its backend. It handles core field operations — but the platform has reached its ceiling for what SVC needs next.</p>
+  <div class="current-grid">
+    <div class="current-item">
+      <div class="current-label">What works</div>
+      <div class="current-text">Clock IN / Clock OUT for field workers. Active job tracking with PM and Supervisor assignments. Daily report submission. Report frequency settings per job (Daily, Hourly, Nights, Same Day).</div>
+    </div>
+    <div class="current-item problem">
+      <div class="current-label">Platform limitations</div>
+      <div class="current-text">Generic UI with no design control. No mobile-first experience. Manual processes that should be automated. Hard to scale beyond current feature set. Vendor dependency on AppSheet.</div>
+    </div>
+    <div class="current-item problem">
+      <div class="current-label">Engagement gap</div>
+      <div class="current-text">Field workers use the app because they have to — not because it's fast or satisfying. Low adoption leads to missing reports, delayed data, and manual follow-up from managers.</div>
+    </div>
+    <div class="current-item">
+      <div class="current-label">Data foundation</div>
+      <div class="current-text">Core tables are solid — Contacts, Jobs, Companies, Users, Timesheets. This data migrates cleanly to the new platform. No rebuilding from scratch.</div>
+    </div>
+  </div>
+</div>
+
+
+<!-- FLOWS -->
+<div class="section section-mid">
+  <div class="section-pre">02 — User Flows</div>
+  <h2 class="section-h2">How the New App Works</h2>
+  <p class="section-lead">Two distinct experiences — one for field workers, one for management. Each designed for the specific context where it's used.</p>
+  <div class="flow-grid">
+    <div class="flow-card">
+      <div class="flow-card-header">
+        <div class="flow-card-title">Field Worker</div>
+        <div class="flow-card-badge">Mobile · 30-second workflow</div>
+      </div>
+      <div class="flow-step">
+        <div class="flow-num">1</div>
+        <div>
+          <div class="flow-step-action">Open app — see your job immediately</div>
+          <div class="flow-step-desc">No searching, no menus. The assigned job appears on the home screen by name.</div>
+          <span class="flow-tag tag-g">Zero friction</span>
+        </div>
+      </div>
+      <div class="flow-step">
+        <div class="flow-num">2</div>
+        <div>
+          <div class="flow-step-action">Tap Clock IN</div>
+          <div class="flow-step-desc">One tap. Confirmation animation. Entry logged instantly with timestamp.</div>
+          <span class="flow-tag tag-o">Instant feedback</span>
+        </div>
+      </div>
+      <div class="flow-step">
+        <div class="flow-num">3</div>
+        <div>
+          <div class="flow-step-action">Submit daily report</div>
+          <div class="flow-step-desc">Short form. What was done today, any issues, optional photos. Under 60 seconds.</div>
+          <span class="flow-tag tag-n">Minimal input</span>
+        </div>
+      </div>
+      <div class="flow-step">
+        <div class="flow-num">4</div>
+        <div>
+          <div class="flow-step-action">Clock OUT — day summary appears</div>
+          <div class="flow-step-desc">Hours logged, job confirmed. Clean end-of-day confirmation screen.</div>
+          <span class="flow-tag tag-g">Day complete</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="flow-card">
+      <div class="flow-card-header">
+        <div class="flow-card-title">Admin / Management</div>
+        <div class="flow-card-badge">Desktop + Mobile · Full visibility</div>
+      </div>
+      <div class="flow-step">
+        <div class="flow-num">1</div>
+        <div>
+          <div class="flow-step-action">Open dashboard — all jobs at a glance</div>
+          <div class="flow-step-desc">Visual job cards with status, PM, Super, and last report. Not a flat table.</div>
+          <span class="flow-tag tag-g">Visual overview</span>
+        </div>
+      </div>
+      <div class="flow-step">
+        <div class="flow-num">2</div>
+        <div>
+          <div class="flow-step-action">Filter by status instantly</div>
+          <div class="flow-step-desc">In Progress / Pre Construction / Paused — one tap to filter the full list.</div>
+          <span class="flow-tag tag-n">Smart filters</span>
+        </div>
+      </div>
+      <div class="flow-step">
+        <div class="flow-num">3</div>
+        <div>
+          <div class="flow-step-action">Open a job — full detail view</div>
+          <div class="flow-step-desc">Timesheet history, daily reports, active workers, contact info — all in one place.</div>
+          <span class="flow-tag tag-n">Full context</span>
+        </div>
+      </div>
+      <div class="flow-step">
+        <div class="flow-num">4</div>
+        <div>
+          <div class="flow-step-action">Automatic alerts — no manual follow-up</div>
+          <div class="flow-step-desc">No clock-in by 9 AM? PM gets a notification automatically. Zero chasing required.</div>
+          <span class="flow-tag tag-o">Auto alerts</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+<!-- SCREENS -->
+<div class="section">
+  <div class="section-pre">03 — Interface</div>
+  <h2 class="section-h2">What the App Looks Like</h2>
+  <p class="section-lead">Clean, fast, built for the field. Every screen has one primary action — no clutter, no confusion. Installable on any phone as a PWA — no app store needed.</p>
+
+  <div class="screens-row">
+
+    <div class="screen-wrap">
+      <div class="screen-mock">
+        <div class="screen-bar"><div class="screen-logo">SVC</div><div class="screen-title">Command Center</div></div>
+        <div class="screen-body">
+          <div class="m-greeting">Good morning,</div>
+          <div class="m-name">Pablo C.</div>
+          <div class="m-streak"><div class="m-streak-fire">🔥</div><div class="m-streak-text">12-day streak</div></div>
+          <div class="m-job">
+            <div class="m-job-name">Heartland Dental — Tampa, FL</div>
+            <div class="m-job-sub">PM: Ben Tuseth · HOURLY</div>
+          </div>
+          <div class="m-btn m-btn-p">Clock IN</div>
+          <div class="m-btn m-btn-s">+ Daily Report</div>
+        </div>
+      </div>
+      <div class="screen-label">Home</div>
+    </div>
+
+    <div class="screen-wrap">
+      <div class="screen-mock">
+        <div class="screen-bar"><div class="screen-logo">SVC</div><div class="screen-title">Clock IN</div></div>
+        <div class="screen-body">
+          <div class="m-photo"><div class="m-photo-icon">📷</div><div class="m-photo-label">Jobsite photo</div></div>
+          <div class="m-geo">📍 Location confirmed</div>
+          <div class="m-job">
+            <div class="m-job-name">Heartland Dental — Tampa</div>
+            <div class="m-job-sub">Week ending 4/11/2026</div>
+          </div>
+          <div class="m-btn m-btn-p">Start Working</div>
+        </div>
+      </div>
+      <div class="screen-label">Clock IN</div>
+    </div>
+
+    <div class="screen-wrap">
+      <div class="screen-mock">
+        <div class="screen-bar"><div class="screen-logo">SVC</div><div class="screen-title">Active Jobs</div></div>
+        <div class="screen-body">
+          <div class="m-stats">
+            <div class="m-stat"><div class="m-stat-num">18</div><div class="m-stat-label">Active</div></div>
+            <div class="m-stat"><div class="m-stat-num">3</div><div class="m-stat-label">Alerts</div></div>
+            <div class="m-stat"><div class="m-stat-num">94%</div><div class="m-stat-label">Reported</div></div>
+          </div>
+          <div class="m-job" style="border-left-color:var(--green)">
+            <div class="m-job-name">Appaloosa — Short Hills, NJ</div>
+            <div class="m-job-sub">Ralph G. · IN PROGRESS</div>
+          </div>
+          <div class="m-job">
+            <div class="m-job-name">Heartland Dental — Tampa, FL</div>
+            <div class="m-job-sub">Ben T. · IN PROGRESS</div>
+          </div>
+          <div class="m-alert-job">
+            <div class="m-job-name">Bill's House — Cortez, FL</div>
+            <div class="m-job-sub" style="color:#c0392b">⚠ No clock-in today</div>
+          </div>
+        </div>
+      </div>
+      <div class="screen-label">Admin Dashboard</div>
+    </div>
+
+    <div class="screen-wrap">
+      <div class="screen-mock">
+        <div class="screen-bar"><div class="screen-logo">SVC</div><div class="screen-title">Job Detail</div></div>
+        <div class="screen-body">
+          <div class="m-job" style="margin-bottom:12px;">
+            <div class="m-job-name">Kingsland — Lyndhurst, NJ</div>
+            <div class="m-job-sub">Robert D. · DAILY</div>
+          </div>
+          <div class="m-score-ring"><div class="m-score-num">78</div></div>
+          <div class="m-score-label">Job Score</div>
+          <div class="m-stats">
+            <div class="m-stat"><div class="m-stat-num">14</div><div class="m-stat-label">Days</div></div>
+            <div class="m-stat"><div class="m-stat-num">12</div><div class="m-stat-label">Reports</div></div>
+            <div class="m-stat"><div class="m-stat-num">86%</div><div class="m-stat-label">On time</div></div>
+          </div>
+        </div>
+      </div>
+      <div class="screen-label">Job Score</div>
+    </div>
+
+    <div class="screen-wrap">
+      <div class="screen-mock">
+        <div class="screen-bar"><div class="screen-logo">SVC</div><div class="screen-title">Activity</div></div>
+        <div class="screen-body">
+          <div style="font-size:9px;font-weight:700;color:#aaa;letter-spacing:2px;text-transform:uppercase;margin-bottom:10px;">Today</div>
+          <div class="m-feed-item">
+            <div class="m-feed-dot" style="background:var(--green)"></div>
+            <div><div class="m-feed-text">Pablo C. clocked IN — Heartland Tampa</div><div class="m-feed-time">7:52 AM</div></div>
+          </div>
+          <div class="m-feed-item">
+            <div class="m-feed-dot"></div>
+            <div><div class="m-feed-text">Report submitted — Appaloosa Short Hills</div><div class="m-feed-time">8:14 AM</div></div>
+          </div>
+          <div class="m-feed-item">
+            <div class="m-feed-dot" style="background:#c0392b"></div>
+            <div><div class="m-feed-text" style="color:#c0392b">⚠ No clock-in — Bill's House Cortez</div><div class="m-feed-time">9:00 AM · Alert sent</div></div>
+          </div>
+          <div class="m-feed-item">
+            <div class="m-feed-dot"></div>
+            <div><div class="m-feed-text">Anthony F. clocked IN — Heartland Tampa</div><div class="m-feed-time">9:22 AM</div></div>
+          </div>
+        </div>
+      </div>
+      <div class="screen-label">Activity Feed</div>
+    </div>
+
+  </div>
+</div>
+
+
+<!-- STACK -->
+<div class="section section-dark">
+  <div class="section-pre">04 — Technology</div>
+  <h2 class="section-h2">Stack</h2>
+  <p class="section-lead">Modern, proven tools — no proprietary platforms, no vendor lock-in. Built to own and scale independently.</p>
+  <div class="stack-grid">
+    <div class="stack-item">
+      <div class="stack-icon">⚡</div>
+      <div class="stack-name">Next.js</div>
+      <div class="stack-role">Frontend framework. Fast, mobile-first, installable on any phone as a PWA without an app store.</div>
+    </div>
+    <div class="stack-item">
+      <div class="stack-icon">🔥</div>
+      <div class="stack-name">Firebase</div>
+      <div class="stack-role">Authentication, real-time database, and photo storage. User login, live data sync, and file uploads.</div>
+    </div>
+    <div class="stack-item">
+      <div class="stack-icon">▲</div>
+      <div class="stack-name">Vercel</div>
+      <div class="stack-role">Deployment and hosting. Instant updates, global CDN, zero server management. Accessible by link on any device.</div>
+    </div>
+    <div class="stack-item">
+      <div class="stack-icon">📊</div>
+      <div class="stack-name">Sheets API</div>
+      <div class="stack-role">Data migration from existing Google Sheets. Optional continued report export to spreadsheets.</div>
+    </div>
+  </div>
+</div>
+
+
+<!-- TIMELINE -->
+<div class="section">
+  <div class="section-pre">05 — Delivery</div>
+  <h2 class="section-h2">Migration Timeline</h2>
+  <p class="section-lead">Three phases to go from AppSheet to a fully modern platform. Scope is migration and modernization only — no new features until the base is live and validated.</p>
+  <div class="timeline">
+    <div class="tl-phase">
+      <div><div class="tl-circle">P1</div></div>
+      <div>
+        <div class="tl-phase-label">Phase 1</div>
+        <div class="tl-phase-title">Core Infrastructure</div>
+        <div class="tl-duration">Weeks 1–2</div>
+        <div class="tl-items">
+          <div class="tl-item">Project setup — Next.js + Firebase + Vercel</div>
+          <div class="tl-item">User authentication with role-based access</div>
+          <div class="tl-item">Data migration — Contacts, Jobs, Companies, Users</div>
+          <div class="tl-item">Clock IN / Clock OUT functional</div>
+          <div class="tl-item">Basic daily report submission</div>
+        </div>
+      </div>
+    </div>
+    <div class="tl-phase">
+      <div><div class="tl-circle">P2</div></div>
+      <div>
+        <div class="tl-phase-label">Phase 2</div>
+        <div class="tl-phase-title">Admin Views & Job Management</div>
+        <div class="tl-duration">Weeks 3–4</div>
+        <div class="tl-items">
+          <div class="tl-item">Admin dashboard — visual job cards</div>
+          <div class="tl-item">Job detail view with timesheet history</div>
+          <div class="tl-item">Report frequency settings per job</div>
+          <div class="tl-item">Pre Construction vs Active job separation</div>
+          <div class="tl-item">Report email configuration per job</div>
+        </div>
+      </div>
+    </div>
+    <div class="tl-phase">
+      <div><div class="tl-circle">P3</div></div>
+      <div>
+        <div class="tl-phase-label">Phase 3</div>
+        <div class="tl-phase-title">Polish & Launch</div>
+        <div class="tl-duration">Weeks 5–6</div>
+        <div class="tl-items">
+          <div class="tl-item">Mobile UX refinement — tested on real devices</div>
+          <div class="tl-item">PWA setup — installable on iPhone and Android</div>
+          <div class="tl-item">Parallel run alongside AppSheet for validation</div>
+          <div class="tl-item">Full team onboarding and handover</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+<!-- FEATURES -->
+<div class="section section-dark">
+  <div class="section-pre">06 — Future Scope</div>
+  <h2 class="section-h2">Possible Enhancements</h2>
+  <p class="section-lead">Not in migration scope. These are features to evaluate after launch — each one adds a specific layer of engagement or operational visibility. To be scoped and prioritized with the team.</p>
+  <div class="features-grid">
+    <div class="feature-card">
+      <div class="feature-num">01</div>
+      <div class="feature-icon">🔥</div>
+      <div class="feature-name">Report Streak</div>
+      <div class="feature-desc">Workers build a daily reporting streak visible on their home screen. Consistent reporting becomes a habit, not a chore. Managers see who's consistent without asking.</div>
+      <div class="feature-value">Drives daily engagement without management follow-up</div>
+    </div>
+    <div class="feature-card">
+      <div class="feature-num">02</div>
+      <div class="feature-icon">📍</div>
+      <div class="feature-name">Photo + GPS Verification</div>
+      <div class="feature-desc">Clock IN requires a jobsite photo and confirms GPS coordinates match the job location. Prevents off-site clock-ins. Photo stored per entry for review.</div>
+      <div class="feature-value">Eliminates timesheet fraud and improves field accountability</div>
+    </div>
+    <div class="feature-card">
+      <div class="feature-num">03</div>
+      <div class="feature-icon">📊</div>
+      <div class="feature-name">Job Score</div>
+      <div class="feature-desc">Each job gets a live score based on reporting consistency, clock-in timing, and photo uploads. Admin sees which jobs are running well and which need attention — at a glance.</div>
+      <div class="feature-value">Replaces manual check-ins with automatic health indicators</div>
+    </div>
+    <div class="feature-card">
+      <div class="feature-num">04</div>
+      <div class="feature-icon">⚡</div>
+      <div class="feature-name">Quick Problem Check-In</div>
+      <div class="feature-desc">At Clock OUT, one question: "Any issues today?" — Yes or No. If yes, a short field opens for details and an optional photo. Field problems captured before they escalate.</div>
+      <div class="feature-value">Captures issues in real time, not after the fact</div>
+    </div>
+    <div class="feature-card">
+      <div class="feature-num">05</div>
+      <div class="feature-icon">🎙</div>
+      <div class="feature-name">Voice Report</div>
+      <div class="feature-desc">Workers speak their daily report instead of typing. App transcribes automatically. Designed for field conditions — gloves, tools, no time to type a paragraph.</div>
+      <div class="feature-value">Removes the biggest friction point in daily reporting</div>
+    </div>
+    <div class="feature-card">
+      <div class="feature-num">06</div>
+      <div class="feature-icon">📡</div>
+      <div class="feature-name">Live Activity Feed</div>
+      <div class="feature-desc">A real-time timeline for admin — who clocked in, which reports were submitted, which jobs have no activity today. Full operational pulse in one screen.</div>
+      <div class="feature-value">Full visibility without calling or chasing anyone</div>
+    </div>
+  </div>
+</div>
+
+
+<!-- CLOSING -->
+<div class="closing">
+  <div>
+    <div class="closing-h">Built to last —<br>and to <span>grow.</span></div>
+    <p class="closing-sub">This migration sets a foundation that AppSheet cannot provide — full design control, real scalability, and a platform that can expand to cover every area of SVC's operations over time.</p>
+  </div>
+  <div class="closing-right">
+    <div class="closing-by">Prepared by</div>
+    <div class="closing-name">Benjamín Costa</div>
+  </div>
+</div>
+
+</body>
+</html>
