@@ -3,7 +3,7 @@
 import { useState } from 'react'
 import { useRouter } from 'next/navigation'
 import Link from 'next/link'
-import { ArrowLeft, Check, ThumbsUp, Minus, ThumbsDown } from 'lucide-react'
+import { ArrowLeft, Check, ArrowRight, ThumbsUp, Minus, ThumbsDown } from 'lucide-react'
 
 type Feeling = 'good' | 'neutral' | 'bad'
 
@@ -122,13 +122,16 @@ export default function FeedbackPage() {
         </div>
       </main>
 
-      <div className="shrink-0 safe-bottom">
+      <div className="shrink-0 safe-bottom border-t-2 border-surface-container-low">
         <button
           onClick={handleSubmit}
           disabled={!feeling || !feedbackText.trim() || isSubmitting}
-          className="w-full h-24 bg-primary-container hover:bg-primary text-on-primary-container font-heading text-3xl uppercase tracking-tighter disabled:opacity-30 transition-colors"
+          className="w-full h-24 bg-primary-container hover:bg-primary text-on-primary-container flex items-center justify-between px-10 disabled:opacity-30 btn-press transition-colors"
         >
-          {isSubmitting ? 'SENDING…' : 'SEND →'}
+          <span className="font-heading text-4xl font-bold tracking-tighter uppercase">
+            {isSubmitting ? 'SENDING…' : 'SEND FEEDBACK'}
+          </span>
+          <ArrowRight className="w-8 h-8" />
         </button>
       </div>
     </div>

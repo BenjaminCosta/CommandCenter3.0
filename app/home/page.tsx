@@ -2,8 +2,6 @@
 
 import { useState } from 'react'
 import Link from 'next/link'
-import { Header } from '@/components/header'
-import { BottomNav } from '@/components/bottom-nav'
 import { workers, jobs } from '@/lib/data'
 
 
@@ -27,7 +25,6 @@ export default function HomePage() {
 
   return (
     <div className="min-h-screen bg-background flex flex-col">
-      <Header workerName={worker.name} />
 
       <main className="flex-1 max-w-lg mx-auto w-full pt-6 pb-28 px-6 flex flex-col">
 
@@ -106,7 +103,6 @@ export default function HomePage() {
         </div>
       </main>
 
-      <BottomNav active="home" />
     </div>
   )
 }

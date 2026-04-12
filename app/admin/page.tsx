@@ -2,11 +2,11 @@
 
 import { useState } from 'react'
 import Link from 'next/link'
-import { jobs } from '@/lib/data'
-import { BottomNav } from '@/components/bottom-nav'
-import { Search, LogOut, Briefcase, AlertTriangle, CheckCircle } from 'lucide-react'
+import { jobs, workers } from '@/lib/data'
+import { WorkersList } from '@/components/workers-list'
+import { Search, Briefcase, AlertTriangle, CheckCircle } from 'lucide-react'
 
-type FilterTab = 'all' | 'in-progress' | 'pre-construction' | 'alerts'
+type FilterTab = 'all' | 'in-progress' | 'pre-construction' | 'alerts' | 'supers'
 
 export default function AdminDashboard() {
   const [searchQuery, setSearchQuery] = useState('')
@@ -24,6 +24,7 @@ export default function AdminDashboard() {
         job.pm.toLowerCase().includes(searchQuery.toLowerCase())
       const matchesTab =
         activeTab === 'all' ||
+        activeTab === 'supers' ||
         (activeTab === 'in-progress' && job.status === 'IN PROGRESS') ||
         (activeTab === 'pre-construction' && job.status === 'PRE CONSTRUCTION') ||
         (activeTab === 'alerts' && job.status === 'ALERT')
@@ -39,6 +40,7 @@ export default function AdminDashboard() {
     { id: 'all', label: 'All' },
     { id: 'in-progress', label: 'Active' },
     { id: 'alerts', label: 'Alerts' },
+    { id: 'supers', label: 'Supers' },
   ]
 
   const statusBorderMap: Record<string, string> = {
@@ -61,26 +63,6 @@ export default function AdminDashboard() {
 
   return (
     <div className="min-h-screen bg-background flex flex-col">
-      {/* Header */}
-      <header className="bg-background safe-top">
-        <div className="max-w-4xl mx-auto flex items-center justify-between h-16 px-6">
-          <img src="/logo.png" alt="SVC Logo" className="h-10 w-auto" />
-          <div className="flex items-center gap-4">
-            <div className="text-right">
-              <p className="font-mono text-[10px] text-on-surface-variant uppercase tracking-widest">
-                COMMAND CENTER
-              </p>
-              <p className="font-heading text-sm uppercase tracking-wide text-on-surface leading-none mt-0.5">
-                Admin
-              </p>
-            </div>
-            <Link href="/" className="h-11 w-11 flex items-center justify-center text-on-surface-variant hover:text-on-surface transition-colors">
-              <LogOut className="w-5 h-5" />
-            </Link>
-          </div>
-        </div>
-        <div className="h-1 bg-surface-container-low w-full" />
-      </header>
 
       <main className="flex-1 max-w-4xl mx-auto w-full px-4 pb-24 pt-6">
         {/* Stats row */}
@@ -138,60 +120,74 @@ export default function AdminDashboard() {
           ))}
         </div>
 
-        {/* Job list */}
-        <div className="space-y-3">
-          {filteredJobs.map(job => {
-            const borderColor = statusBorderMap[job.status] ?? 'border-l-outline-variant'
-            const statusBadge = statusBadgeMap[job.status] ?? 'bg-surface-container text-on-surface'
-            const freqBadge = freqBadgeMap[job.reportFrequency] ?? 'bg-surface-container text-on-surface'
-            const isAlert = job.status === 'ALERT'
-
-            return (
-              <Link key={job.id} href={`/admin/jobs/${job.id}`} className="block">
-                <div className={`bg-surface-container-low border-l-4 ${borderColor} p-5 hover:bg-surface-container transition-colors ${isAlert ? 'bg-red/5' : ''}`}>
-                  <div className="flex items-start justify-between gap-4">
-                    <div className="flex-1 min-w-0">
-                      <h3 className="font-heading text-xl uppercase tracking-tight text-on-surface leading-tight">
-                        {job.name}
-                      </h3>
-                      <p className="text-on-surface-variant text-sm mt-1">
-                        {job.city}, {job.state}
-                      </p>
-                      <div className="mt-3 text-on-surface-variant text-sm space-y-0.5">
-                        <p>PM: {job.pm}</p>
-                        {job.super && <p>Super: {job.super}</p>}
-                      </div>
-                      {job.lastActivity && (
-                        <p className="font-mono text-[10px] text-on-surface-variant uppercase tracking-widest mt-3">
-                          Last: {new Date(job.lastActivity).toLocaleDateString()}
-                        </p>
-                      )}
-                    </div>
-                    <div className="flex flex-col items-end gap-2 shrink-0">
-                      <span className={`px-2 py-1 font-mono text-[10px] uppercase tracking-widest ${statusBadge}`}>
-                        {job.status}
-                      </span>
-                      <span className={`px-2 py-1 font-mono text-[10px] uppercase tracking-widest ${freqBadge}`}>
-                        {job.reportFrequency}
-                      </span>
-                    </div>
-                  </div>
-                </div>
-              </Link>
-            )
-          })}
-        </div>
-
-        {filteredJobs.length === 0 && (
-          <div className="text-center py-20">
-            <p className="font-mono text-xs text-on-surface-variant uppercase tracking-widest">
-              No jobs found
-            </p>
+        {/* Supers tab: worker list */}
+        {activeTab === 'supers' ? (
+          <div className="border-t border-[#1a1a1a]">
+            <WorkersList />
           </div>
+        ) : (
+          <>
+            {/* Job list */}
+            <div className="space-y-3">
+              {filteredJobs.map(job => {
+                const borderColor = statusBorderMap[job.status] ?? 'border-l-outline-variant'
+                const statusBadge = statusBadgeMap[job.status] ?? 'bg-surface-container text-on-surface'
+                const freqBadge = freqBadgeMap[job.reportFrequency] ?? 'bg-surface-container text-on-surface'
+                const isAlert = job.status === 'ALERT'
+                const noImgUrl = !job.imageFolder
+
+                return (
+                  <Link key={job.id} href={`/admin/jobs/${job.id}`} className="block">
+                    <div className={`bg-secondary-fixed border-l-4 ${borderColor} p-5 hover:bg-secondary-fixed-dim transition-colors ${isAlert ? 'border-l-red' : ''}`}>
+                      <div className="flex items-start justify-between gap-4">
+                        <div className="flex-1 min-w-0">
+                          <h3 className="font-heading text-xl uppercase tracking-tight text-on-secondary-fixed leading-tight">
+                            {job.name}
+                          </h3>
+                          <p className="text-on-secondary-fixed/60 text-sm mt-1">
+                            {job.city}, {job.state}
+                          </p>
+                          <div className="mt-3 text-on-secondary-fixed/60 text-sm space-y-0.5">
+                            <p>PM: {job.pm}</p>
+                            {job.super && <p>Super: {job.super}</p>}
+                          </div>
+                          {job.lastActivity && (
+                            <p className="font-mono text-[10px] text-on-secondary-fixed/50 uppercase tracking-widest mt-3">
+                              Last: {new Date(job.lastActivity).toLocaleDateString()}
+                            </p>
+                          )}
+                        </div>
+                        <div className="flex flex-col items-end gap-2 shrink-0">
+                          <span className={`px-2 py-1 font-mono text-[10px] uppercase tracking-widest ${statusBadge}`}>
+                            {job.status}
+                          </span>
+                          <span className={`px-2 py-1 font-mono text-[10px] uppercase tracking-widest ${freqBadge}`}>
+                            {job.reportFrequency}
+                          </span>
+                          {noImgUrl && (
+                            <span className="px-2 py-1 font-mono text-[10px] uppercase tracking-widest bg-[#1a1a1a] border border-[#444] text-[#888]">
+                              NO IMG URL
+                            </span>
+                          )}
+                        </div>
+                      </div>
+                    </div>
+                  </Link>
+                )
+              })}
+            </div>
+
+            {filteredJobs.length === 0 && (
+              <div className="text-center py-20">
+                <p className="font-mono text-xs text-on-surface-variant uppercase tracking-widest">
+                  No jobs found
+                </p>
+              </div>
+            )}
+          </>
         )}
       </main>
 
-      <BottomNav active="admin" />
     </div>
   )
 }

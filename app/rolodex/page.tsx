@@ -1,8 +1,7 @@
 'use client'
 
 import { useState } from 'react'
-import { BottomNav } from '@/components/bottom-nav'
-import { contacts, type Contact } from '@/lib/data'
+import { contacts, workers, type Contact } from '@/lib/data'
 import { Search } from 'lucide-react'
 
 const roleOrder: Contact['role'][] = ['PM', 'Super', 'Worker', 'Admin']
@@ -19,6 +18,7 @@ function getInitials(name: string): string {
 
 export default function RolodexPage() {
   const [search, setSearch] = useState('')
+  const worker = workers[0]
 
   const filtered = contacts.filter(
     c =>
@@ -34,21 +34,6 @@ export default function RolodexPage() {
 
   return (
     <div className="min-h-screen bg-background flex flex-col">
-      {/* Header */}
-      <header className="bg-background safe-top">
-        <div className="max-w-lg mx-auto flex items-center justify-between h-16 px-6">
-          <img src="/logo.png" alt="SVC Logo" className="h-10 w-auto" />
-          <div className="text-right">
-            <p className="font-mono text-[10px] text-on-surface-variant uppercase tracking-widest">
-              COMMAND CENTER
-            </p>
-            <p className="font-heading text-sm uppercase tracking-wide text-on-surface leading-none mt-0.5">
-              Rolodex
-            </p>
-          </div>
-        </div>
-        <div className="h-1 bg-surface-container-low w-full" />
-      </header>
 
       <main className="flex-1 max-w-lg mx-auto w-full pb-24">
         {/* Sticky search */}
@@ -96,17 +81,6 @@ export default function RolodexPage() {
                           {contact.name}
                         </p>
                         <div className="flex items-center gap-2 flex-wrap">
-                          <div className="inline-flex items-center gap-1.5 h-6 px-3 bg-tertiary-container">
-                            <span
-                              className="material-symbols-outlined text-xs text-on-tertiary-container"
-                              style={{ fontVariationSettings: "'FILL' 1", fontSize: '14px' }}
-                            >
-                              badge
-                            </span>
-                            <span className="font-mono text-[9px] text-on-tertiary-container uppercase tracking-wider">
-                              {contact.role}
-                            </span>
-                          </div>
                           {contact.phone && (
                             <span className="font-mono text-[10px] text-on-surface-variant uppercase tracking-widest">
                               {contact.phone}
@@ -153,7 +127,6 @@ export default function RolodexPage() {
         </div>
       </main>
 
-      <BottomNav active="rolodex" />
     </div>
   )
 }

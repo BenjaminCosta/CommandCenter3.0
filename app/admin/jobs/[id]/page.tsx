@@ -61,13 +61,13 @@ export default function JobDetailPage({ params }: { params: Promise<{ id: string
 
       <main className="flex-1 max-w-4xl mx-auto w-full px-4 pt-6 pb-16">
         {/* Job summary card */}
-        <div className="bg-surface-container-low p-6 mb-8">
+        <div className="bg-secondary-fixed p-6 mb-8">
           <div className="flex items-start justify-between gap-4 mb-6">
             <div>
-              <h1 className="font-heading text-3xl uppercase tracking-tighter text-on-surface leading-tight">
+              <h1 className="font-heading text-3xl uppercase tracking-tighter text-on-secondary-fixed leading-tight">
                 {job.name}
               </h1>
-              <p className="text-on-surface-variant flex items-center gap-2 mt-2 text-sm">
+              <p className="text-on-secondary-fixed/60 flex items-center gap-2 mt-2 text-sm">
                 <MapPin className="w-4 h-4 shrink-0" strokeWidth={1.5} />
                 {job.city}, {job.state}
               </p>
@@ -83,13 +83,13 @@ export default function JobDetailPage({ params }: { params: Promise<{ id: string
           </div>
           <div className="grid grid-cols-2 gap-6">
             <div>
-              <p className="font-mono text-[10px] text-on-surface-variant uppercase tracking-widest mb-1">PM</p>
-              <p className="text-on-surface text-sm">{job.pm}</p>
+              <p className="font-mono text-[10px] text-on-secondary-fixed/50 uppercase tracking-widest mb-1">PM</p>
+              <p className="text-on-secondary-fixed text-sm">{job.pm}</p>
             </div>
             {job.super && (
               <div>
-                <p className="font-mono text-[10px] text-on-surface-variant uppercase tracking-widest mb-1">Super</p>
-                <p className="text-on-surface text-sm">{job.super}</p>
+                <p className="font-mono text-[10px] text-on-secondary-fixed/50 uppercase tracking-widest mb-1">Super</p>
+                <p className="text-on-secondary-fixed text-sm">{job.super}</p>
               </div>
             )}
           </div>
@@ -122,17 +122,17 @@ export default function JobDetailPage({ params }: { params: Promise<{ id: string
               </p>
             ) : (
               timeEntries.map(entry => (
-                <div key={entry.id} className="bg-surface-container-low border-l-4 border-l-green p-5">
+                <div key={entry.id} className="bg-secondary-fixed border-l-4 border-l-green p-5">
                   <div className="flex items-start justify-between gap-4">
                     <div>
-                      <p className="font-mono text-[10px] text-on-surface-variant uppercase tracking-widest">
+                      <p className="font-mono text-[10px] text-on-secondary-fixed/50 uppercase tracking-widest">
                         {formatDate(entry.date)}
                       </p>
-                      <p className="text-on-surface flex items-center gap-2 mt-2 text-sm">
-                        <User className="w-4 h-4 text-on-surface-variant shrink-0" strokeWidth={1.5} />
+                      <p className="text-on-secondary-fixed flex items-center gap-2 mt-2 text-sm">
+                        <User className="w-4 h-4 text-on-secondary-fixed/50 shrink-0" strokeWidth={1.5} />
                         {entry.workerName}
                       </p>
-                      <p className="text-on-surface-variant flex items-center gap-2 mt-2 text-sm">
+                      <p className="text-on-secondary-fixed/60 flex items-center gap-2 mt-2 text-sm">
                         <Clock className="w-4 h-4 shrink-0" strokeWidth={1.5} />
                         {formatTime(entry.clockIn)} — {entry.clockOut ? formatTime(entry.clockOut) : 'Active'}
                       </p>
@@ -140,7 +140,7 @@ export default function JobDetailPage({ params }: { params: Promise<{ id: string
                     {entry.hours && (
                       <div className="text-right shrink-0">
                         <p className="font-heading text-3xl uppercase text-green">{entry.hours}</p>
-                        <p className="font-mono text-[10px] text-on-surface-variant uppercase tracking-widest">hours</p>
+                        <p className="font-mono text-[10px] text-on-secondary-fixed/50 uppercase tracking-widest">hours</p>
                       </div>
                     )}
                   </div>
@@ -161,24 +161,24 @@ export default function JobDetailPage({ params }: { params: Promise<{ id: string
               reports.map(report => (
                 <div
                   key={report.id}
-                  className={`bg-surface-container-low border-l-4 p-5 ${report.hasIssues ? 'border-l-red' : 'border-l-green'}`}
+                  className={`bg-secondary-fixed border-l-4 p-5 ${report.hasIssues ? 'border-l-red' : 'border-l-green'}`}
                 >
-                  <p className="font-mono text-[10px] text-on-surface-variant uppercase tracking-widest">
+                  <p className="font-mono text-[10px] text-on-secondary-fixed/50 uppercase tracking-widest">
                     {formatDate(report.date)}
                   </p>
-                  <p className="text-on-surface flex items-center gap-2 mt-2 text-sm">
-                    <User className="w-4 h-4 text-on-surface-variant shrink-0" strokeWidth={1.5} />
+                  <p className="text-on-secondary-fixed flex items-center gap-2 mt-2 text-sm">
+                    <User className="w-4 h-4 text-on-secondary-fixed/50 shrink-0" strokeWidth={1.5} />
                     {report.workerName}
                   </p>
-                  <p className="text-on-surface-variant text-sm mt-4 leading-relaxed">
+                  <p className="text-on-secondary-fixed/70 text-sm mt-4 leading-relaxed">
                     {report.workCompleted}
                   </p>
                   {report.hasIssues && report.issueDetails && (
-                    <div className="mt-4 p-4 bg-surface-container border-l-4 border-l-red">
+                    <div className="mt-4 p-4 bg-secondary-fixed-dim border-l-4 border-l-red">
                       <p className="font-mono text-[10px] text-red uppercase tracking-widest mb-2">
                         ⚠ Issue Reported
                       </p>
-                      <p className="text-on-surface-variant text-sm leading-relaxed">
+                      <p className="text-on-secondary-fixed/70 text-sm leading-relaxed">
                         {report.issueDetails}
                       </p>
                     </div>
@@ -191,36 +191,36 @@ export default function JobDetailPage({ params }: { params: Promise<{ id: string
 
         {/* Info tab */}
         {activeTab === 'info' && (
-          <div className="bg-surface-container-low p-6 space-y-6">
+          <div className="bg-secondary-fixed p-6 space-y-6">
             <div>
-              <p className="font-mono text-[10px] text-on-surface-variant uppercase tracking-widest mb-1">Project Name</p>
-              <p className="font-heading text-xl uppercase tracking-tight text-on-surface">{job.name}</p>
+              <p className="font-mono text-[10px] text-on-secondary-fixed/50 uppercase tracking-widest mb-1">Project Name</p>
+              <p className="font-heading text-xl uppercase tracking-tight text-on-secondary-fixed">{job.name}</p>
             </div>
             <div>
-              <p className="font-mono text-[10px] text-on-surface-variant uppercase tracking-widest mb-1">Address</p>
-              <p className="text-on-surface text-sm">{job.address || `${job.city}, ${job.state}`}</p>
+              <p className="font-mono text-[10px] text-on-secondary-fixed/50 uppercase tracking-widest mb-1">Address</p>
+              <p className="text-on-secondary-fixed text-sm">{job.address || `${job.city}, ${job.state}`}</p>
             </div>
             <div className="grid grid-cols-2 gap-6">
               <div>
-                <p className="font-mono text-[10px] text-on-surface-variant uppercase tracking-widest mb-1">Project Manager</p>
-                <p className="text-on-surface text-sm">{job.pm}</p>
+                <p className="font-mono text-[10px] text-on-secondary-fixed/50 uppercase tracking-widest mb-1">Project Manager</p>
+                <p className="text-on-secondary-fixed text-sm">{job.pm}</p>
               </div>
               {job.super && (
                 <div>
-                  <p className="font-mono text-[10px] text-on-surface-variant uppercase tracking-widest mb-1">Superintendent</p>
-                  <p className="text-on-surface text-sm">{job.super}</p>
+                  <p className="font-mono text-[10px] text-on-secondary-fixed/50 uppercase tracking-widest mb-1">Superintendent</p>
+                  <p className="text-on-secondary-fixed text-sm">{job.super}</p>
                 </div>
               )}
             </div>
             <div className="grid grid-cols-2 gap-6">
               <div>
-                <p className="font-mono text-[10px] text-on-surface-variant uppercase tracking-widest mb-1">Status</p>
+                <p className="font-mono text-[10px] text-on-secondary-fixed/50 uppercase tracking-widest mb-1">Status</p>
                 <span className={`inline-block px-2 py-1 font-mono text-[10px] uppercase tracking-widest mt-1 ${statusBadge}`}>
                   {job.status}
                 </span>
               </div>
               <div>
-                <p className="font-mono text-[10px] text-on-surface-variant uppercase tracking-widest mb-1">Report Frequency</p>
+                <p className="font-mono text-[10px] text-on-secondary-fixed/50 uppercase tracking-widest mb-1">Report Frequency</p>
                 <span className={`inline-block px-2 py-1 font-mono text-[10px] uppercase tracking-widest mt-1 ${freqBadge}`}>
                   {job.reportFrequency}
                 </span>

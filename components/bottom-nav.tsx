@@ -1,53 +1,64 @@
 'use client'
 
-import { useState, useEffect } from 'react'
 import Link from 'next/link'
-import { Home, FileText, Users, LayoutGrid } from 'lucide-react'
 
-type ActiveTab = 'home' | 'reports' | 'rolodex' | 'admin'
+type ActiveTab = 'home' | 'reports' | 'rolodex' | 'profile' | 'admin'
 
 interface BottomNavProps {
   active: ActiveTab
 }
 
+const navItems: { id: ActiveTab; label: string; icon: string; href: string; fillOnActive?: boolean }[] = [
+  { id: 'home',    label: 'Home',    icon: 'home',         href: '/home',    fillOnActive: true },
+  { id: 'reports', label: 'Reports', icon: 'analytics',    href: '/reports' },
+  { id: 'rolodex', label: 'Rolodex', icon: 'contact_page', href: '/rolodex' },
+  { id: 'profile', label: 'Profile', icon: 'person',       href: '/profile', fillOnActive: true },
+]
+
 export function BottomNav({ active }: BottomNavProps) {
-  const [isAdmin, setIsAdmin] = useState(false)
-
-  useEffect(() => {
-    setIsAdmin(sessionStorage.getItem('userRole') === 'admin')
-  }, [])
-
-  const baseItems = [
-    { id: 'home' as const, label: 'Home', icon: Home, href: '/home' },
-    { id: 'reports' as const, label: 'Reports', icon: FileText, href: '/reports' },
-    { id: 'rolodex' as const, label: 'Rolodex', icon: Users, href: '/rolodex' },
-  ]
-
-  const adminItem = { id: 'admin' as const, label: 'Admin', icon: LayoutGrid, href: '/admin' }
-
-  const navItems = isAdmin ? [...baseItems, adminItem] : baseItems
-
   return (
-    <nav className="fixed bottom-0 left-0 right-0 bg-background safe-bottom z-50">
-      <div className="bg-surface-container-low h-2 w-full" />
-      <div className="max-w-lg mx-auto flex items-stretch justify-around h-16">
+    <nav className="fixed bottom-0 left-0 right-0 z-50 safe-bottom">
+      <div className="max-w-lg mx-auto flex items-stretch justify-around h-20 bg-background">
         {navItems.map((item) => {
-          const Icon = item.icon
           const isActive = active === item.id
+          // Profile active = orange bg; others active = highlighted text
+          if (isActive && item.id === 'profile') {
+            return (
+              <Link
+                key={item.id}
+                href={item.href}
+                className="flex flex-col items-center justify-center gap-1 w-full h-full bg-primary-container text-on-primary-container"
+              >
+                <span
+                  className="material-symbols-outlined text-2xl"
+                  style={item.fillOnActive ? { fontVariationSettings: "'FILL' 1" } : undefined}
+                >
+                  {item.icon}
+                </span>
+                <span className="font-heading font-bold text-xs uppercase tracking-tighter">
+                  {item.label}
+                </span>
+              </Link>
+            )
+          }
           return (
             <Link
               key={item.id}
               href={item.href}
-              className={`flex flex-col items-center justify-center gap-1 w-full h-full transition-colors ${
-                isActive ? 'bg-surface-container-low' : 'hover:bg-surface-container'
+              className={`flex flex-col items-center justify-center gap-1 w-full h-full transition-colors hover:bg-surface-container ${
+                isActive ? 'bg-surface-container-low' : ''
               }`}
             >
-              <Icon
-                className={`w-5 h-5 ${isActive ? 'text-primary-container' : 'text-on-surface-variant'}`}
-                strokeWidth={1.5}
-              />
               <span
-                className={`text-[10px] font-mono uppercase tracking-widest ${
+                className={`material-symbols-outlined text-2xl ${
+                  isActive ? 'text-primary-container' : 'text-on-surface-variant'
+                }`}
+                style={isActive && item.fillOnActive ? { fontVariationSettings: "'FILL' 1" } : undefined}
+              >
+                {item.icon}
+              </span>
+              <span
+                className={`font-heading font-bold text-xs uppercase tracking-tighter ${
                   isActive ? 'text-primary-container' : 'text-on-surface-variant'
                 }`}
               >

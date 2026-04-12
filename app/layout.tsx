@@ -1,6 +1,7 @@
 import type { Metadata, Viewport } from 'next'
 import { Barlow, Barlow_Condensed, IBM_Plex_Mono, Public_Sans } from 'next/font/google'
 import { Analytics } from '@vercel/analytics/next'
+import { AppLayout } from '@/components/AppLayout'
 import './globals.css'
 
 const barlow = Barlow({ 
@@ -64,9 +65,9 @@ export default function RootLayout({
         />
       </head>
       <body className={`${barlow.variable} ${barlowCondensed.variable} ${ibmPlexMono.variable} ${publicSans.variable} font-sans antialiased`}>
-        <div className="mobile-shell">
+        <AppLayout>
           {children}
-        </div>
+        </AppLayout>
         {process.env.NODE_ENV === 'production' && <Analytics />}
       </body>
     </html>

@@ -10,6 +10,7 @@ export interface Job {
   reportFrequency: 'DAILY' | 'HOURLY' | 'WEEKLY'
   status: 'IN PROGRESS' | 'PRE CONSTRUCTION' | 'COMPLETED' | 'ALERT'
   lastActivity?: string
+  imageFolder?: string
 }
 
 export interface Worker {
@@ -17,6 +18,7 @@ export interface Worker {
   name: string
   email: string
   assignedJobId: string
+  appLevel: 'Neo' | 'Master' | 'Journeyman'
 }
 
 export interface Contact {
@@ -48,6 +50,8 @@ export interface DailyReport {
   hasIssues: boolean
   issueDetails?: string
   photoUrl?: string
+  createdAt: number   // Unix ms timestamp
+  editedAt?: number   // Unix ms timestamp, set on edits after first submit
 }
 
 // Sample Data
@@ -62,7 +66,8 @@ export const jobs: Job[] = [
     address: '123 Mountain Ave, Short Hills, NJ 07078',
     reportFrequency: 'HOURLY',
     status: 'IN PROGRESS',
-    lastActivity: '2024-01-15T14:30:00Z'
+    lastActivity: '2024-01-15T14:30:00Z',
+    imageFolder: 'https://drive.google.com/drive/folders/appaloosa-nj'
   },
   {
     id: 'job-2',
@@ -86,7 +91,8 @@ export const jobs: Job[] = [
     address: '789 Gulf Blvd, Cortez, FL 34215',
     reportFrequency: 'DAILY',
     status: 'IN PROGRESS',
-    lastActivity: '2024-01-14T17:00:00Z'
+    lastActivity: '2024-01-14T17:00:00Z',
+    imageFolder: 'https://drive.google.com/drive/folders/bills-house-fl'
   },
   {
     id: 'job-4',
@@ -119,19 +125,43 @@ export const workers: Worker[] = [
     id: 'worker-1',
     name: 'Pablo Carballeira',
     email: 'pablo@svc.com',
-    assignedJobId: 'job-1'
+    assignedJobId: 'job-1',
+    appLevel: 'Master'
   },
   {
     id: 'worker-2',
     name: 'Anthony Fraser',
     email: 'anthony@svc.com',
-    assignedJobId: 'job-2'
+    assignedJobId: 'job-2',
+    appLevel: 'Journeyman'
   },
   {
     id: 'worker-3',
     name: 'Robert Depoortere',
     email: 'robert@svc.com',
-    assignedJobId: 'job-3'
+    assignedJobId: 'job-3',
+    appLevel: 'Neo'
+  },
+  {
+    id: 'worker-4',
+    name: 'J. Haddad',
+    email: 'jhaddad@svc.com',
+    assignedJobId: 'job-4',
+    appLevel: 'Journeyman'
+  },
+  {
+    id: 'worker-5',
+    name: 'Michael Healy',
+    email: 'mhealy@svc.com',
+    assignedJobId: 'job-5',
+    appLevel: 'Master'
+  },
+  {
+    id: 'worker-6',
+    name: 'Nathaniel Bowers',
+    email: 'nbowers@svc.com',
+    assignedJobId: 'job-2',
+    appLevel: 'Neo'
   }
 ]
 
@@ -165,7 +195,28 @@ export const timeEntries: TimeEntry[] = [
     clockOut: '2024-01-15T16:00:00Z',
     hours: 8,
     date: '2024-01-15'
-  }
+  },
+  // Pablo Carballeira — Week ending Apr 11, 2026 (Sat)
+  { id: 'te-1', workerId: 'worker-1', workerName: 'Pablo Carballeira', jobId: 'job-1', clockIn: '2026-04-06T12:00:00Z', clockOut: '2026-04-06T20:30:00Z', hours: 8.5, date: '2026-04-06' },
+  { id: 'te-2', workerId: 'worker-1', workerName: 'Pablo Carballeira', jobId: 'job-1', clockIn: '2026-04-07T11:30:00Z', clockOut: '2026-04-07T20:30:00Z', hours: 9.0, date: '2026-04-07' },
+  { id: 'te-3', workerId: 'worker-1', workerName: 'Pablo Carballeira', jobId: 'job-1', clockIn: '2026-04-08T12:00:00Z', clockOut: '2026-04-08T20:00:00Z', hours: 8.0, date: '2026-04-08' },
+  { id: 'te-4', workerId: 'worker-1', workerName: 'Pablo Carballeira', jobId: 'job-1', clockIn: '2026-04-09T12:00:00Z', clockOut: '2026-04-09T20:30:00Z', hours: 8.5, date: '2026-04-09' },
+  { id: 'te-5', workerId: 'worker-1', workerName: 'Pablo Carballeira', jobId: 'job-1', clockIn: '2026-04-10T11:30:00Z', clockOut: '2026-04-10T20:30:00Z', hours: 9.0, date: '2026-04-10' },
+  // Pablo Carballeira — Week ending Apr 4, 2026 (Sat)
+  { id: 'te-6', workerId: 'worker-1', workerName: 'Pablo Carballeira', jobId: 'job-1', clockIn: '2026-03-30T12:00:00Z', clockOut: '2026-03-30T20:00:00Z', hours: 8.0, date: '2026-03-30' },
+  { id: 'te-7', workerId: 'worker-1', workerName: 'Pablo Carballeira', jobId: 'job-1', clockIn: '2026-03-31T12:00:00Z', clockOut: '2026-03-31T20:30:00Z', hours: 8.5, date: '2026-03-31' },
+  { id: 'te-8', workerId: 'worker-1', workerName: 'Pablo Carballeira', jobId: 'job-1', clockIn: '2026-04-01T12:00:00Z', clockOut: '2026-04-01T20:00:00Z', hours: 8.0, date: '2026-04-01' },
+  { id: 'te-9', workerId: 'worker-1', workerName: 'Pablo Carballeira', jobId: 'job-1', clockIn: '2026-04-02T12:00:00Z', clockOut: '2026-04-02T21:00:00Z', hours: 9.0, date: '2026-04-02' },
+  { id: 'te-10', workerId: 'worker-1', workerName: 'Pablo Carballeira', jobId: 'job-1', clockIn: '2026-04-03T11:30:00Z', clockOut: '2026-04-03T20:00:00Z', hours: 8.5, date: '2026-04-03' },
+  // Pablo Carballeira — Week ending Mar 28, 2026 (Sat)
+  { id: 'te-11', workerId: 'worker-1', workerName: 'Pablo Carballeira', jobId: 'job-1', clockIn: '2026-03-23T12:00:00Z', clockOut: '2026-03-23T20:00:00Z', hours: 8.0, date: '2026-03-23' },
+  { id: 'te-12', workerId: 'worker-1', workerName: 'Pablo Carballeira', jobId: 'job-1', clockIn: '2026-03-24T11:30:00Z', clockOut: '2026-03-24T20:30:00Z', hours: 9.0, date: '2026-03-24' },
+  { id: 'te-13', workerId: 'worker-1', workerName: 'Pablo Carballeira', jobId: 'job-1', clockIn: '2026-03-25T12:00:00Z', clockOut: '2026-03-25T20:30:00Z', hours: 8.5, date: '2026-03-25' },
+  { id: 'te-14', workerId: 'worker-1', workerName: 'Pablo Carballeira', jobId: 'job-1', clockIn: '2026-03-26T12:00:00Z', clockOut: '2026-03-26T20:00:00Z', hours: 8.0, date: '2026-03-26' },
+  { id: 'te-15', workerId: 'worker-1', workerName: 'Pablo Carballeira', jobId: 'job-1', clockIn: '2026-03-27T11:30:00Z', clockOut: '2026-03-27T20:00:00Z', hours: 8.5, date: '2026-03-27' },
+  // Today (2026-04-12) — workers currently clocked in
+  { id: 'te-today-1', workerId: 'worker-1', workerName: 'Pablo Carballeira', jobId: 'job-1', clockIn: '2026-04-12T12:00:00Z', date: '2026-04-12' },
+  { id: 'te-today-2', workerId: 'worker-5', workerName: 'Michael Healy',     jobId: 'job-5', clockIn: '2026-04-12T11:30:00Z', date: '2026-04-12' },
 ]
 
 export const dailyReports: DailyReport[] = [
@@ -176,7 +227,8 @@ export const dailyReports: DailyReport[] = [
     jobId: 'job-1',
     date: '2024-01-15',
     workCompleted: 'Completed framing on second floor east wing. Installed 12 window frames.',
-    hasIssues: false
+    hasIssues: false,
+    createdAt: new Date('2024-01-15T15:00:00Z').getTime()
   },
   {
     id: 'report-2',
@@ -186,7 +238,9 @@ export const dailyReports: DailyReport[] = [
     date: '2024-01-14',
     workCompleted: 'Finished drywall installation in main hallway. Started electrical rough-in.',
     hasIssues: true,
-    issueDetails: 'Material delivery delayed - missing 20 sheets of drywall'
+    issueDetails: 'Material delivery delayed - missing 20 sheets of drywall',
+    createdAt: new Date('2024-01-14T15:00:00Z').getTime(),
+    editedAt: new Date('2024-01-14T16:30:00Z').getTime()
   },
   {
     id: 'report-3',
@@ -195,7 +249,8 @@ export const dailyReports: DailyReport[] = [
     jobId: 'job-2',
     date: '2024-01-15',
     workCompleted: 'Dental chair installation complete. Started plumbing connections.',
-    hasIssues: false
+    hasIssues: false,
+    createdAt: new Date('2024-01-15T14:00:00Z').getTime()
   }
 ]
 
