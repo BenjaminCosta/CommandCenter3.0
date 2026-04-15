@@ -51,7 +51,7 @@ export default function FeedbackPage() {
   }
 
   return (
-    <div className="h-[calc(100dvh-3.5rem-5rem)] bg-background flex flex-col">
+    <div className="h-[calc(100dvh-3.5rem-4.25rem)] bg-background flex flex-col">
       {/* Header */}
       <header className="bg-background safe-top border-b-0">
         <div className="max-w-lg mx-auto flex items-center h-16 px-6 gap-4">

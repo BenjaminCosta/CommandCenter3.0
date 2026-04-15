@@ -47,15 +47,15 @@ export default function ProfilePage() {
       <main className="flex-1 max-w-lg mx-auto w-full pb-28">
 
         {/* Hero section */}
-        <section className="flex flex-col items-center py-10 px-6 bg-background border-b border-surface-container-low">
+        <section className="flex flex-col items-center py-6 px-6 bg-background border-b border-surface-container-low">
           {/* Avatar */}
-          <div className="w-28 h-28 bg-primary-container flex items-center justify-center mb-5">
-            <span className="font-heading font-bold text-5xl tracking-tighter text-on-primary-container leading-none">
+          <div className="w-24 h-24 bg-primary-container flex items-center justify-center mb-3">
+            <span className="font-heading font-bold text-4xl tracking-tighter text-on-primary-container leading-none">
               {initials}
             </span>
           </div>
           {/* Identity */}
-          <h1 className="font-heading font-bold text-4xl uppercase tracking-tighter text-on-surface text-center">
+          <h1 className="font-heading font-bold text-3xl uppercase tracking-tighter text-on-surface text-center">
             {worker.name}
           </h1>
           {job && (
@@ -64,7 +64,7 @@ export default function ProfilePage() {
             </p>
           )}
           {/* appLevel badge */}
-          <div className="mt-4 inline-flex items-center gap-2 px-3 py-1 bg-surface-container-low">
+          <div className="mt-2 inline-flex items-center gap-2 px-3 py-1 bg-surface-container-low">
             <div className="w-2 h-2 bg-tertiary shrink-0" />
             <span className="font-mono text-[10px] text-tertiary uppercase tracking-widest">
               {worker.appLevel}

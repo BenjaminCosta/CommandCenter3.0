@@ -57,7 +57,7 @@ export default function ClockOutPage() {
   }
 
   return (
-    <div className="h-[calc(100dvh-3.5rem-5rem)] bg-background flex flex-col">
+    <div className="h-[calc(100dvh-3.5rem-4.25rem)] bg-background flex flex-col">
       {/* Transactional Header */}
       <header className="sticky top-0 w-full z-50 bg-background safe-top shrink-0">
         <div className="h-16 flex items-center px-6 justify-between">

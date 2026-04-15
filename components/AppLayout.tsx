@@ -52,7 +52,7 @@ function BottomNavBar({
 }) {
   return (
     <nav className="fixed bottom-0 left-0 right-0 z-50 safe-bottom">
-      <div className="max-w-lg mx-auto flex items-stretch justify-around h-20 bg-background border-t border-surface-container-low">
+      <div className="max-w-lg mx-auto flex items-stretch justify-around h-17 bg-background border-t border-surface-container-low">
         {items.map((item) => {
           const isActive = activeId === item.id
 
@@ -63,10 +63,10 @@ function BottomNavBar({
                 href={item.href}
                 className="flex flex-col items-center justify-center gap-1 w-full h-full bg-primary-container text-on-primary-container"
               >
-                <span className="material-symbols-outlined text-2xl" style={{ fontVariationSettings: "'FILL' 1" }}>
+                <span className="material-symbols-outlined text-xl" style={{ fontVariationSettings: "'FILL' 1" }}>
                   {item.icon}
                 </span>
-                <span className="font-heading font-bold text-xs uppercase tracking-tighter">{item.label}</span>
+                <span className="font-heading font-bold text-[10px] uppercase tracking-tighter">{item.label}</span>
               </Link>
             )
           }
@@ -80,12 +80,12 @@ function BottomNavBar({
               }`}
             >
               <span
-                className={`material-symbols-outlined text-2xl ${isActive ? 'text-primary-container' : 'text-on-surface-variant'}`}
+                className={`material-symbols-outlined text-xl ${isActive ? 'text-primary-container' : 'text-on-surface-variant'}`}
                 style={isActive && item.fillOnActive ? { fontVariationSettings: "'FILL' 1" } : undefined}
               >
                 {item.icon}
               </span>
-              <span className={`font-heading font-bold text-xs uppercase tracking-tighter ${isActive ? 'text-primary-container' : 'text-on-surface-variant'}`}>
+              <span className={`font-heading font-bold text-[10px] uppercase tracking-tighter ${isActive ? 'text-primary-container' : 'text-on-surface-variant'}`}>
                 {item.label}
               </span>
             </Link>
@@ -269,7 +269,7 @@ export function AppLayout({ children }: { children: React.ReactNode }) {
           isAdminView={false}
           onToggle={toggleAdminView}
         />
-        <div className="flex-1 pb-20">
+        <div className="flex-1 pb-17">
           {children}
         </div>
         <BottomNavBar items={workerNavItems} activeId={workerActive} />
@@ -286,7 +286,7 @@ export function AppLayout({ children }: { children: React.ReactNode }) {
         isAdminView={isAdminView}
         onToggle={toggleAdminView}
       />
-      <div className="flex-1 pb-20">
+      <div className="flex-1 pb-17">
         {children}
       </div>
       <BottomNavBar items={adminNavItems} activeId={adminActive} />
