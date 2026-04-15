@@ -26,11 +26,11 @@ export default function HomePage() {
   return (
     <div className="min-h-screen bg-background flex flex-col">
 
-      <main className="flex-1 max-w-lg mx-auto w-full pt-6 pb-28 px-6 flex flex-col">
+      <main className="flex-1 max-w-lg mx-auto w-full pt-4 pb-24 px-6 flex flex-col">
 
         {/* Greeting */}
-        <section className="mb-10">
-          <h1 className="font-heading text-6xl font-bold leading-none tracking-tighter uppercase mb-3 text-on-surface">
+        <section className="mb-6">
+          <h1 className="font-heading text-5xl font-bold leading-none tracking-tighter uppercase mb-3 text-on-surface">
             {greeting},<br />{firstName}
           </h1>
 
@@ -38,7 +38,7 @@ export default function HomePage() {
 
         {/* Current Assignment */}
         {assignedJob && (
-          <section className="mb-8">
+          <section className="mb-5">
             <p className="font-mono text-xs tracking-[0.2em] mb-4 text-primary-container uppercase">CURRENT ASSIGNMENT</p>
             <div className="bg-secondary-fixed text-on-secondary-fixed p-6 border-l-12 border-primary-container relative overflow-hidden">
               <h2 className="font-heading text-3xl font-bold leading-tight mb-4 uppercase">{assignedJob.name}</h2>
@@ -57,7 +57,7 @@ export default function HomePage() {
         )}
 
         {/* Primary CTA */}
-        <section className="grow flex flex-col gap-4 min-h-70 mb-10">
+        <section className="flex flex-col gap-6 min-h-56 mb-4">
           {isClockedIn ? (
             <>
               <div className="bg-surface-container-low border-l-4 border-l-green p-5">
@@ -79,8 +79,8 @@ export default function HomePage() {
             </>
           ) : (
             <Link href="/clock-in" className="block grow">
-              <button className="w-full h-full min-h-60 bg-primary-container hover:bg-primary text-on-primary-container flex flex-col items-center justify-center gap-4 transition-colors btn-press p-8">
-                <span className="font-heading text-7xl font-bold tracking-tighter leading-none uppercase">CLOCK IN</span>
+              <button className="w-full h-full min-h-52 bg-primary-container hover:bg-primary text-on-primary-container flex flex-col items-center justify-center gap-4 transition-colors btn-press p-6">
+                <span className="font-heading text-6xl font-bold tracking-tighter leading-none uppercase">CLOCK IN</span>
                 <p className="font-mono text-xs tracking-widest uppercase opacity-70 flex items-center gap-2">SHIFT START <span className="material-symbols-outlined text-base">play_arrow</span></p>
               </button>
             </Link>

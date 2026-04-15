@@ -51,7 +51,7 @@ export default function FeedbackPage() {
   }
 
   return (
-    <div className="h-dvh bg-background flex flex-col">
+    <div className="h-[calc(100dvh-3.5rem-5rem)] bg-background flex flex-col">
       {/* Header */}
       <header className="bg-background safe-top border-b-0">
         <div className="max-w-lg mx-auto flex items-center h-16 px-6 gap-4">
@@ -70,7 +70,7 @@ export default function FeedbackPage() {
         <div className="h-1 bg-surface-container-low w-full" />
       </header>
 
-      <main className="flex-1 overflow-y-auto max-w-lg mx-auto w-full px-6 pt-8 pb-4 flex flex-col gap-8">
+      <main className="flex-1 overflow-y-auto max-w-lg mx-auto w-full px-6 pt-5 pb-4 flex flex-col gap-5">
         <div>
           <h1 className="font-heading text-5xl uppercase tracking-tighter leading-[0.9] text-on-surface mb-2">
             HOW&apos;S THE<br />APP?
@@ -116,7 +116,7 @@ export default function FeedbackPage() {
               value={feedbackText}
               onChange={(e) => setFeedbackText(e.target.value)}
               placeholder="What's working? What's not? What's missing?"
-              className="flex-1 p-4 bg-transparent text-on-secondary-fixed placeholder:text-on-secondary-fixed/40 text-base leading-relaxed resize-none focus:outline-none min-h-40"
+              className="flex-1 p-4 bg-transparent text-on-secondary-fixed placeholder:text-on-secondary-fixed/40 text-base leading-relaxed resize-none focus:outline-none min-h-32"
             />
           </div>
         </div>
@@ -126,7 +126,7 @@ export default function FeedbackPage() {
         <button
           onClick={handleSubmit}
           disabled={!feeling || !feedbackText.trim() || isSubmitting}
-          className="w-full h-24 bg-primary-container hover:bg-primary text-on-primary-container flex items-center justify-between px-10 disabled:opacity-30 btn-press transition-colors"
+          className="w-full h-20 bg-primary-container hover:bg-primary text-on-primary-container flex items-center justify-between px-10 disabled:opacity-30 btn-press transition-colors"
         >
           <span className="font-heading text-4xl font-bold tracking-tighter uppercase">
             {isSubmitting ? 'SENDING…' : 'SEND FEEDBACK'}

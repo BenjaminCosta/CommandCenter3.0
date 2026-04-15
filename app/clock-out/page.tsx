@@ -57,7 +57,7 @@ export default function ClockOutPage() {
   }
 
   return (
-    <div className="h-dvh bg-background flex flex-col">
+    <div className="h-[calc(100dvh-3.5rem-5rem)] bg-background flex flex-col">
       {/* Transactional Header */}
       <header className="sticky top-0 w-full z-50 bg-background safe-top shrink-0">
         <div className="h-16 flex items-center px-6 justify-between">
@@ -71,22 +71,22 @@ export default function ClockOutPage() {
         </div>
       </header>
 
-      <main className="flex-1 overflow-y-auto flex flex-col px-6 py-8">
-        <div className="mt-8 mb-10">
+      <main className="flex-1 overflow-y-auto flex flex-col px-6 py-5">
+        <div className="mt-4 mb-6">
           <h1 className="font-heading text-6xl font-bold tracking-tighter uppercase leading-[0.85] text-on-surface">
             END YOUR<br />SHIFT?
           </h1>
         </div>
 
         {/* Job */}
-        <div className="bg-secondary-fixed text-on-secondary-fixed p-6 border-l-12 border-primary-container mb-6">
+          <div className="bg-secondary-fixed text-on-secondary-fixed p-6 border-l-12 border-primary-container mb-4">
           <p className="font-mono text-[10px] uppercase opacity-60 mb-2">CURRENT ASSIGNMENT</p>
           <h3 className="font-heading text-2xl font-bold leading-tight">{assignedJob?.name}</h3>
           <p className="font-sans text-sm opacity-70 mt-1">{assignedJob?.city}, {assignedJob?.state}</p>
         </div>
 
         {/* Time summary */}
-        <div className="bg-surface-container-low p-6 mb-6">
+          <div className="bg-surface-container-low p-6 mb-4">
           <div className="flex items-center gap-4 mb-5">
             <Clock className="w-5 h-5 text-green shrink-0" />
             <div>
@@ -109,7 +109,7 @@ export default function ClockOutPage() {
         <button
           onClick={handleClockOut}
           disabled={isSubmitting}
-          className="w-full h-24 bg-primary-container hover:bg-primary text-on-primary-container flex items-center justify-between px-10 disabled:opacity-40 btn-press transition-colors"
+          className="w-full h-20 bg-primary-container hover:bg-primary text-on-primary-container flex items-center justify-between px-10 disabled:opacity-40 btn-press transition-colors"
         >
           <span className="font-heading text-4xl font-bold tracking-tighter uppercase">
             {isSubmitting ? 'CLOCKING OUT...' : 'CLOCK OUT'}

@@ -257,6 +257,10 @@ export function AppLayout({ children }: { children: React.ReactNode }) {
   // For admin on mobile with admin view OFF → show worker layout
   // For role=worker → show worker layout
   if (!isAdmin || (isAdmin && !isAdminView)) {
+    // Login route: render bare — no shared topbar or bottom nav
+    if (pathname === '/') {
+      return <div className="min-h-dvh bg-background">{children}</div>
+    }
     return (
       <div className="mobile-shell min-h-dvh bg-background flex flex-col">
         <Topbar

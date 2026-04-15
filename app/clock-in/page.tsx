@@ -58,7 +58,7 @@ export default function ClockInPage() {
   }
 
   return (
-    <div className="h-dvh bg-background flex flex-col">
+    <div className="h-[calc(100dvh-3.5rem-5rem)] bg-background flex flex-col">
       {/* Header */}
       <header className="sticky top-0 w-full z-50 bg-[#0f0f0f] safe-top shrink-0">
         <div className="h-16 flex items-center px-6 justify-between">
@@ -76,7 +76,7 @@ export default function ClockInPage() {
 
       <main className="flex-1 flex flex-col overflow-hidden">
         {/* Job Context */}
-        <div className="shrink-0 bg-surface-container-low px-6 py-8 flex flex-col gap-1">
+        <div className="shrink-0 bg-surface-container-low px-6 py-4 flex flex-col gap-1">
           <span className="font-mono text-[10px] tracking-[0.2em] text-outline uppercase">
             CURRENT ASSIGNMENT
           </span>
@@ -168,7 +168,7 @@ export default function ClockInPage() {
         </section>
 
         {/* Technical Metadata */}
-        <div className="shrink-0 px-6 py-5 grid grid-cols-2 gap-4 bg-surface-container-low">
+        <div className="shrink-0 px-6 py-3 grid grid-cols-2 gap-4 bg-surface-container-low">
           <div className="flex flex-col gap-1">
             <span className="font-mono text-[10px] text-outline uppercase tracking-widest">DEVICE_ID</span>
             <span className="font-mono text-sm text-on-surface">SVC-XP-9902</span>
@@ -185,7 +185,7 @@ export default function ClockInPage() {
         <button
           onClick={handleConfirm}
           disabled={!photoTaken || isSubmitting}
-          className="w-full h-20 bg-primary-container hover:bg-primary text-on-primary-container font-heading font-extrabold text-2xl uppercase tracking-widest flex items-center justify-center gap-4 disabled:opacity-30 transition-colors active:scale-[0.98]"
+          className="w-full h-16 bg-primary-container hover:bg-primary text-on-primary-container font-heading font-extrabold text-2xl uppercase tracking-widest flex items-center justify-center gap-4 disabled:opacity-30 transition-colors active:scale-[0.98]"
         >
           {isSubmitting ? 'STARTING…' : 'START WORKING'}
           <span className="material-symbols-outlined text-3xl">play_arrow</span>

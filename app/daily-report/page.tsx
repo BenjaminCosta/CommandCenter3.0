@@ -131,7 +131,7 @@ export default function DailyReportPage() {
     step === 3
 
   return (
-    <div className="h-dvh bg-background flex flex-col">
+    <div className="h-[calc(100dvh-3.5rem-5rem)] bg-background flex flex-col">
       {/* Header */}
       <header className="sticky top-0 z-50 bg-background safe-top shrink-0">
         <div className="max-w-lg mx-auto flex items-center h-16 px-6 gap-4">
@@ -168,11 +168,11 @@ export default function DailyReportPage() {
 
         {/* Step 1: Work Completed */}
         {step === 1 && (
-          <div className="flex-1 flex flex-col px-6 pt-8">
+          <div className="flex-1 flex flex-col px-6 pt-5">
             <h1 className="font-heading text-5xl uppercase tracking-tighter leading-[0.9] text-on-surface mb-2">
               WHAT DID<br />YOU DO<br />TODAY?
             </h1>
-            <p className="font-mono text-xs text-on-surface-variant uppercase tracking-widest mb-8">
+            <p className="font-mono text-xs text-on-surface-variant uppercase tracking-widest mb-5">
               {assignedJob?.name ?? 'Current assignment'}
             </p>
             <div className="flex bg-secondary-fixed">
@@ -189,11 +189,11 @@ export default function DailyReportPage() {
 
         {/* Step 2: Issues */}
         {step === 2 && (
-          <div className="flex-1 flex flex-col px-6 pt-8">
-            <h1 className="font-heading text-5xl uppercase tracking-tighter leading-[0.9] text-on-surface mb-8">
+          <div className="flex-1 flex flex-col px-6 pt-5">
+            <h1 className="font-heading text-5xl uppercase tracking-tighter leading-[0.9] text-on-surface mb-5">
               ANY<br />ISSUES?
             </h1>
-            <div className="flex gap-4 mb-8">
+            <div className="flex gap-4 mb-5">
               <button
                 onClick={() => setHasIssues(false)}
                 className={`flex-1 h-20 flex items-center justify-center gap-3 border-2 transition-colors ${
@@ -224,7 +224,7 @@ export default function DailyReportPage() {
                   value={issueDetails}
                   onChange={(e) => setIssueDetails(e.target.value)}
                   placeholder="Describe the issue…"
-                  className="flex-1 p-4 bg-transparent text-on-secondary-fixed placeholder:text-on-secondary-fixed/40 text-base leading-relaxed resize-none focus:outline-none min-h-36"
+                  className="flex-1 p-4 bg-transparent text-on-secondary-fixed placeholder:text-on-secondary-fixed/40 text-base leading-relaxed resize-none focus:outline-none min-h-28"
                 />
               </div>
             )}
@@ -234,7 +234,7 @@ export default function DailyReportPage() {
         {/* Step 3: Photo */}
         {step === 3 && (
           <div className="flex-1 flex flex-col min-h-0">
-            <div className="shrink-0 bg-surface-container-low px-6 py-5">
+            <div className="shrink-0 bg-surface-container-low px-6 py-3">
               <span className="font-mono text-[10px] tracking-[0.2em] text-outline uppercase">ATTACH PHOTO</span>
               <p className="font-mono text-xs text-on-surface-variant uppercase tracking-widest mt-1">
                 Optional — site progress documentation
@@ -267,7 +267,7 @@ export default function DailyReportPage() {
                 <div className="w-1 h-8 bg-white" /><div className="w-1 h-2 bg-white" /><div className="w-1 h-2 bg-white" /><div className="w-1 h-2 bg-white" />
               </div>
             </section>
-            <div className="shrink-0 px-6 py-5 grid grid-cols-2 gap-4 bg-surface-container-low">
+            <div className="shrink-0 px-6 py-3 grid grid-cols-2 gap-4 bg-surface-container-low">
               <div className="flex flex-col gap-1">
                 <span className="font-mono text-[10px] text-outline uppercase tracking-widest">DEVICE_ID</span>
                 <span className="font-mono text-sm text-on-surface">SVC-XP-9902</span>
@@ -282,7 +282,7 @@ export default function DailyReportPage() {
 
         {/* Step 4: Preview */}
         {step === 4 && (
-          <div className="flex-1 flex flex-col px-6 pt-8 pb-6 gap-6">
+          <div className="flex-1 flex flex-col px-6 pt-5 pb-6 gap-5">
             <div>
               <p className="font-mono text-[10px] text-on-surface-variant uppercase tracking-widest mb-1">PREVIEW REPORT</p>
               <h1 className="font-heading text-4xl uppercase tracking-tighter leading-[0.9] text-on-surface">
@@ -353,13 +353,13 @@ export default function DailyReportPage() {
           <button
             onClick={handleNext}
             disabled={!canNext}
-            className="w-full h-24 bg-primary-container hover:bg-primary text-on-primary-container flex items-center justify-between px-10 disabled:opacity-30 btn-press transition-colors"
+            className="w-full h-20 bg-primary-container hover:bg-primary text-on-primary-container flex items-center justify-between px-10 disabled:opacity-30 btn-press transition-colors"
           >
             <span className="font-heading text-4xl font-bold tracking-tighter uppercase">NEXT</span>
             <ArrowRight className="w-8 h-8" />
           </button>
         ) : (
-          <div className="flex h-24">
+          <div className="flex h-20">
             <button
               onClick={() => setStep(1)}
               className="w-1/3 h-full bg-surface-container-high hover:bg-surface-container text-on-surface flex items-center justify-between px-6 transition-colors border-r border-surface-container-low"
