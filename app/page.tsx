@@ -15,6 +15,7 @@ export default function LoginPage() {
       const isAdmin = email.toLowerCase() === 'admin@svc.com'
       sessionStorage.setItem('userRole', isAdmin ? 'admin' : 'worker')
       sessionStorage.setItem('userEmail', email)
+      if (isAdmin) sessionStorage.setItem('adminViewActive', 'true')
       router.push(isAdmin ? '/admin' : '/home')
     }, 500)
   }

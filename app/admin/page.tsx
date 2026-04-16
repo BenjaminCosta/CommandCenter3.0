@@ -141,21 +141,31 @@ export default function AdminDashboard() {
                     <div className={`bg-secondary-fixed border-l-4 ${borderColor} p-5 hover:bg-secondary-fixed-dim transition-colors ${isAlert ? 'border-l-red' : ''}`}>
                       <div className="flex items-start justify-between gap-4">
                         <div className="flex-1 min-w-0">
-                          <h3 className="font-heading text-xl uppercase tracking-tight text-on-secondary-fixed leading-tight">
+                          <h3 className="font-heading text-3xl font-bold uppercase tracking-tight text-on-secondary-fixed leading-tight">
                             {job.name}
                           </h3>
-                          <p className="text-on-secondary-fixed/60 text-sm mt-1">
-                            {job.city}, {job.state}
-                          </p>
-                          <div className="mt-3 text-on-secondary-fixed/60 text-sm space-y-0.5">
-                            <p>PM: {job.pm}</p>
-                            {job.super && <p>Super: {job.super}</p>}
+                          <div className="grid grid-cols-2 gap-4 mt-4">
+                            <div>
+                              <p className="font-mono text-[10px] uppercase text-on-secondary-fixed/60 tracking-widest mb-1">LOCATION</p>
+                              <p className="font-sans font-bold text-sm text-on-secondary-fixed">{job.city}, {job.state}</p>
+                            </div>
+                            <div>
+                              <p className="font-mono text-[10px] uppercase text-on-secondary-fixed/60 tracking-widest mb-1">PM</p>
+                              <p className="font-sans font-bold text-sm text-on-secondary-fixed">{job.pm}</p>
+                            </div>
+                            {job.super && (
+                              <div>
+                                <p className="font-mono text-[10px] uppercase text-on-secondary-fixed/60 tracking-widest mb-1">SUPER</p>
+                                <p className="font-sans font-bold text-sm text-on-secondary-fixed">{job.super}</p>
+                              </div>
+                            )}
+                            {job.lastActivity && (
+                              <div>
+                                <p className="font-mono text-[10px] uppercase text-on-secondary-fixed/60 tracking-widest mb-1">LAST ACTIVITY</p>
+                                <p className="font-sans font-bold text-sm text-on-secondary-fixed">{new Date(job.lastActivity).toLocaleDateString()}</p>
+                              </div>
+                            )}
                           </div>
-                          {job.lastActivity && (
-                            <p className="font-mono text-[10px] text-on-secondary-fixed/50 uppercase tracking-widest mt-3">
-                              Last: {new Date(job.lastActivity).toLocaleDateString()}
-                            </p>
-                          )}
                         </div>
                         <div className="flex flex-col items-end gap-2 shrink-0">
                           <span className={`px-2 py-1 font-mono text-[10px] uppercase tracking-widest ${statusBadge}`}>

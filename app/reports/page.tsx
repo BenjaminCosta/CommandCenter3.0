@@ -98,10 +98,10 @@ export default function ReportsPage() {
                       )}
                     </div>
 
-                    <h3 className="font-heading text-xl uppercase tracking-tight text-on-secondary-fixed leading-tight mt-2">
+                    <h3 className="font-heading text-3xl font-bold uppercase tracking-tight text-on-secondary-fixed leading-tight mt-2">
                       {job?.name}
                     </h3>
-                    <p className="text-on-secondary-fixed/70 text-sm mt-3 leading-relaxed line-clamp-2">
+                    <p className="font-sans font-bold text-sm text-on-secondary-fixed/80 mt-3 leading-snug line-clamp-2">
                       {report.workCompleted}
                     </p>
                   </div>

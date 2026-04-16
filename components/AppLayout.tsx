@@ -150,11 +150,15 @@ export function AppLayout({ children }: { children: React.ReactNode }) {
 
   useEffect(() => {
     const storedRole = (sessionStorage.getItem('userRole') as UserRole) || 'worker'
-    const storedView = sessionStorage.getItem('adminViewActive') === 'true'
+    const storedView = sessionStorage.getItem('adminViewActive')
+    // Admins default to admin view unless they explicitly toggled it off
+    const resolvedAdminView = storedRole === 'admin'
+      ? (storedView === null ? true : storedView === 'true')
+      : false
     const desktop    = window.innerWidth >= 1024
 
     setRole(storedRole)
-    setIsAdminView(storedView)
+    setIsAdminView(resolvedAdminView)
     setIsDesktop(desktop)
     setMounted(true)
 

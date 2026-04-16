@@ -1,6 +1,6 @@
 'use client'
 
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import Link from 'next/link'
 import { workers, jobs } from '@/lib/data'
 
@@ -11,13 +11,13 @@ export default function HomePage() {
   const [isClockedIn, setIsClockedIn] = useState(false)
   const [clockInTime, setClockInTime] = useState<string | null>(null)
 
-  if (typeof window !== 'undefined' && !clockInTime) {
+  useEffect(() => {
     const storedTime = sessionStorage.getItem('clockInTime')
     if (storedTime) {
       setIsClockedIn(true)
       setClockInTime(storedTime)
     }
-  }
+  }, [])
 
   const firstName = worker.name.split(' ')[0].toUpperCase()
   const hour = new Date().getHours()

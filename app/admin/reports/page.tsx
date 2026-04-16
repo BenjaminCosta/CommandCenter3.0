@@ -53,44 +53,51 @@ export default function AdminReportsPage() {
       </div>
 
       {/* Report list */}
-      <div className="flex flex-col">
+      <div className="px-4 pb-24">
         {allReports.map(report => {
           const job = jobs.find(j => j.id === report.jobId)
           return (
             <div
               key={report.id}
-              className={`px-4 py-4 border-b border-[#1a1a1a] border-l-4 ${
+              className={`bg-secondary-fixed border-l-4 mb-3 ${
                 report.hasIssues ? 'border-l-error' : 'border-l-tertiary'
               }`}
             >
-              {/* Top row */}
-              <div className="flex items-start justify-between gap-3 mb-2">
-                <div>
-                  <p className="font-sans font-bold text-sm text-on-surface">
-                    {report.workerName}
-                  </p>
-                  <p className="font-mono text-[11px] text-on-surface-variant mt-0.5">
-                    {job?.name ?? report.jobId} · {formatDate(report.date)}
-                  </p>
+              <div className="p-5">
+                {/* Top row: date/badges */}
+                <div className="flex items-start justify-between gap-2">
+                  <div className="flex items-center gap-2 flex-wrap">
+                    <p className="font-mono text-[10px] text-on-secondary-fixed/60 uppercase tracking-widest">
+                      {formatDate(report.date)}
+                    </p>
+                    {report.hasIssues && (
+                      <span className="px-2 py-0.5 bg-error font-mono text-[9px] text-on-error uppercase tracking-wider">
+                        ISSUE REPORTED
+                      </span>
+                    )}
+                  </div>
                 </div>
-                {report.hasIssues && (
-                  <span className="font-mono text-[9px] uppercase tracking-widest px-2 py-1 bg-error-container text-on-error-container shrink-0">
-                    ISSUE
-                  </span>
+
+                {/* Worker + job name */}
+                <h3 className="font-heading text-3xl font-bold uppercase tracking-tight text-on-secondary-fixed leading-tight mt-2">
+                  {report.workerName}
+                </h3>
+                <p className="font-mono text-[10px] text-on-secondary-fixed/60 uppercase tracking-widest mt-1">
+                  {job?.name ?? report.jobId}
+                </p>
+
+                {/* Work summary */}
+                <p className="font-sans font-bold text-sm text-on-secondary-fixed/80 mt-3 leading-snug line-clamp-2">
+                  {report.workCompleted}
+                </p>
+
+                {/* Issue details */}
+                {report.hasIssues && report.issueDetails && (
+                  <p className="font-mono text-[11px] text-error mt-2 leading-relaxed">
+                    ⚠ {report.issueDetails}
+                  </p>
                 )}
               </div>
-
-              {/* Work summary */}
-              <p className="font-sans text-sm text-on-surface-variant leading-relaxed line-clamp-2">
-                {report.workCompleted}
-              </p>
-
-              {/* Issue details */}
-              {report.hasIssues && report.issueDetails && (
-                <p className="font-mono text-[11px] text-error mt-2 leading-relaxed">
-                  ⚠ {report.issueDetails}
-                </p>
-              )}
             </div>
           )
         })}
