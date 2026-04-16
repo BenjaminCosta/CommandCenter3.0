@@ -65,15 +65,15 @@ export default function ChangeJobPage() {
                   {currentJob.name}
                 </h3>
                 <div className="flex items-center mt-2 gap-2">
-                  <div className="w-2 h-2 bg-primary-container shrink-0" />
-                  <span className="font-mono text-xs uppercase text-on-secondary-fixed font-semibold tracking-tight">
+                  <div className="w-2 h-2 bg-tertiary shrink-0" />
+                  <span className="font-mono text-xs uppercase text-tertiary font-semibold tracking-tight">
                     Currently Logged
                   </span>
                 </div>
               </div>
-              <div className="bg-primary-container w-12 h-12 flex items-center justify-center shrink-0 ml-4">
+              <div className="bg-tertiary w-12 h-12 flex items-center justify-center shrink-0 ml-4">
                 <span
-                  className="material-symbols-outlined text-on-primary-container text-3xl"
+                  className="material-symbols-outlined text-on-tertiary text-3xl"
                   style={{ fontVariationSettings: "'FILL' 1" }}
                 >
                   check

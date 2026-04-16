@@ -1,6 +1,6 @@
 'use client'
 
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { useRouter } from 'next/navigation'
 import Link from 'next/link'
 import { ArrowLeft, Check, ArrowRight, ThumbsUp, Minus, ThumbsDown } from 'lucide-react'
@@ -19,6 +19,14 @@ export default function FeedbackPage() {
   const [feedbackText, setFeedbackText] = useState('')
   const [isSubmitting, setIsSubmitting] = useState(false)
   const [showSuccess, setShowSuccess] = useState(false)
+
+  useEffect(() => {
+    const prefill = sessionStorage.getItem('prefillFeedback') as Feeling | null
+    if (prefill) {
+      setFeeling(prefill)
+      sessionStorage.removeItem('prefillFeedback')
+    }
+  }, [])
 
   const handleSubmit = () => {
     if (!feeling || !feedbackText.trim()) return

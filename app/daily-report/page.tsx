@@ -26,6 +26,8 @@ export default function DailyReportPage() {
   const [isSubmitting, setIsSubmitting] = useState(false)
   const [showSuccess, setShowSuccess] = useState(false)
   const [editingReportId, setEditingReportId] = useState<string | null>(null)
+  const [quickFeedback, setQuickFeedback] = useState<'good' | 'neutral' | 'bad' | null>(null)
+  const [feedbackSent, setFeedbackSent] = useState(false)
 
   const worker = workers[0]
   const assignedJob = jobs.find(j => j.id === worker.assignedJobId)
@@ -97,17 +99,22 @@ export default function DailyReportPage() {
     setTimeout(() => setShowSuccess(true), 300)
   }
 
-  useEffect(() => {
-    if (showSuccess) {
-      const t = setTimeout(() => router.push('/reports'), 1500)
-      return () => clearTimeout(t)
+  const handleQuickFeedback = (value: 'good' | 'neutral' | 'bad') => {
+    setQuickFeedback(value)
+    if (value === 'good') {
+      sessionStorage.setItem('quickFeedback', 'good')
+      setFeedbackSent(true)
+      setTimeout(() => router.push('/reports'), 900)
+    } else {
+      sessionStorage.setItem('prefillFeedback', value)
+      setTimeout(() => router.push('/feedback'), 200)
     }
-  }, [showSuccess, router])
+  }
 
   if (showSuccess) {
     return (
       <div className="h-dvh bg-background flex flex-col items-center justify-center p-6">
-        <div className="text-center">
+        <div className="text-center w-full max-w-sm">
           <div className="w-28 h-28 border-4 border-primary-container flex items-center justify-center mx-auto mb-8">
             <span className="material-symbols-outlined text-6xl text-primary-container" style={{ fontVariationSettings: "'FILL' 1" }}>check_circle</span>
           </div>
@@ -120,6 +127,38 @@ export default function DailyReportPage() {
           <p className="text-on-surface-variant font-mono text-sm">
             {assignedJob?.name}
           </p>
+
+          {/* Quick feedback */}
+          <div className="mt-10 border-t border-surface-container-low pt-8">
+            {feedbackSent ? (
+              <p className="font-mono text-xs text-primary-container uppercase tracking-widest">Thanks for the feedback!</p>
+            ) : (
+              <>
+                <p className="font-mono text-xs text-on-surface-variant uppercase tracking-widest mb-5">
+                  How was reporting today?
+                </p>
+                <div className="flex gap-3 justify-center">
+                  {([
+                    { value: 'good' as const, emoji: '👍' },
+                    { value: 'neutral' as const, emoji: '😐' },
+                    { value: 'bad' as const, emoji: '👎' },
+                  ]).map(({ value, emoji }) => (
+                    <button
+                      key={value}
+                      onClick={() => handleQuickFeedback(value)}
+                      className={`w-20 h-20 border-2 flex items-center justify-center text-3xl transition-colors ${
+                        quickFeedback === value
+                          ? 'border-primary-container bg-surface-container'
+                          : 'border-outline-variant hover:border-on-surface-variant'
+                      }`}
+                    >
+                      {emoji}
+                    </button>
+                  ))}
+                </div>
+              </>
+            )}
+          </div>
         </div>
       </div>
     )

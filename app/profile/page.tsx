@@ -73,27 +73,27 @@ export default function ProfilePage() {
         </section>
 
         {/* Stats bento */}
-        <section className="px-6 grid grid-cols-2 gap-3 pt-6 pb-2">
-          <div className="bg-surface-container-low p-5 flex flex-col justify-between h-28">
+        <section className="px-6 grid grid-cols-2 gap-2 pt-3 pb-1">
+          <div className="bg-surface-container-low p-4 flex flex-col justify-between h-20">
             <span className="font-mono text-[10px] text-on-surface-variant uppercase tracking-widest">
               This Week
             </span>
-            <div className="flex items-baseline gap-1.5">
-              <span className="font-heading font-bold text-4xl text-on-surface leading-none">
+            <div className="flex items-baseline gap-1">
+              <span className="font-heading font-bold text-3xl text-on-surface leading-none">
                 {weeklyHours.toFixed(1)}
               </span>
-              <span className="font-mono text-xs text-primary-container">HRS</span>
+              <span className="font-mono text-[10px] text-primary-container">HRS</span>
             </div>
           </div>
-          <div className="bg-surface-container-low p-5 flex flex-col justify-between h-28">
+          <div className="bg-surface-container-low p-4 flex flex-col justify-between h-20">
             <span className="font-mono text-[10px] text-on-surface-variant uppercase tracking-widest">
               App Level
             </span>
-            <div className="flex items-baseline gap-2">
-              <span className="font-heading font-bold text-4xl text-on-surface leading-none">
+            <div className="flex items-baseline gap-1.5">
+              <span className="font-heading font-bold text-3xl text-on-surface leading-none">
                 {worker.appLevel}
               </span>
-              <span className="material-symbols-outlined text-tertiary text-xl">verified</span>
+              <span className="material-symbols-outlined text-tertiary text-lg">verified</span>
             </div>
           </div>
         </section>
@@ -126,6 +126,22 @@ export default function ProfilePage() {
             <span className="material-symbols-outlined">logout</span>
             <span className="font-heading font-bold text-2xl uppercase tracking-tighter">Log Out</span>
           </button>
+        </div>
+
+        {/* App Feedback — subtle separator section */}
+        <div className="px-6 pt-10 pb-4">
+          <div className="border-t border-surface-container-low pt-6 flex flex-col items-center gap-3">
+            <p className="font-mono text-[10px] text-on-surface-variant/40 uppercase tracking-widest text-center">
+              Got a minute?
+            </p>
+            <Link
+              href="/feedback"
+              className="inline-flex items-center gap-2 text-on-surface-variant/50 hover:text-on-surface-variant transition-colors py-1 group"
+            >
+              <span className="material-symbols-outlined text-base group-hover:text-primary-container transition-colors">chat_bubble</span>
+              <span className="font-mono text-xs uppercase tracking-widest">Give app feedback</span>
+            </Link>
+          </div>
         </div>
 
       </main>

@@ -76,7 +76,7 @@ export default function HoursPage() {
           <button onClick={() => router.back()} className="text-primary-container">
             <span className="material-symbols-outlined">arrow_back</span>
           </button>
-          <h1 className="font-heading font-bold text-xl uppercase tracking-tighter text-primary-container">
+          <h1 className="font-heading font-bold text-2xl uppercase tracking-tighter text-primary-container">
             My Hours
           </h1>
         </div>
@@ -84,8 +84,20 @@ export default function HoursPage() {
 
       <div className="flex-1 max-w-lg mx-auto w-full">
 
+        {/* All-time total — hero bar */}
+        <div className="bg-secondary-fixed border-l-8 border-tertiary px-6 py-5 flex items-center justify-between">
+          <div>
+            <p className="font-mono text-[10px] uppercase tracking-widest text-on-secondary-fixed/50 mb-1">All-time Total</p>
+            <p className="font-heading font-bold text-5xl uppercase tracking-tighter text-on-secondary-fixed leading-none">
+              {totalAllTime.toFixed(1)}
+              <span className="font-mono text-base text-on-secondary-fixed/50 ml-2">hrs</span>
+            </p>
+          </div>
+          <span className="material-symbols-outlined text-4xl text-tertiary" style={{ fontVariationSettings: "'FILL' 1" }}>schedule</span>
+        </div>
+
         {/* Section label */}
-        <div className="flex items-center gap-4 px-5 py-5">
+        <div className="flex items-center gap-4 px-5 py-4">
           <span className="font-mono text-[10px] text-on-surface-variant uppercase tracking-widest whitespace-nowrap">
             Timesheet History
           </span>
@@ -93,109 +105,86 @@ export default function HoursPage() {
         </div>
 
         {/* Week cards */}
-        <div className="flex flex-col gap-0">
+        <div className="flex flex-col gap-0 px-5 pb-8">
           {weeks.map(([sat, entries], idx) => {
             const weekTotal = entries.reduce((s, e) => s + (e.hours ?? 0), 0)
             const isOpen    = openWeeks.has(sat)
             const isCurrent = idx === 0
 
             return (
-              <div key={sat} className="border-b border-surface-container-low">
-                {/* Week header row */}
+              <div key={sat} className="mb-3">
+                {/* Week header — cream card */}
                 <button
                   onClick={() => toggleWeek(sat)}
-                  className="w-full flex items-center gap-0 hover:bg-surface-container transition-colors text-left"
+                  className="w-full bg-secondary-fixed hover:bg-secondary-fixed-dim transition-colors text-left"
                 >
-                  {/* Left accent bar */}
-                  <div
-                    className={`w-1.5 self-stretch shrink-0 ${
-                      isCurrent ? 'bg-primary-container' : 'bg-on-secondary-fixed/20'
-                    }`}
-                  />
-
-                  <div className="flex-1 flex items-center justify-between px-5 py-4">
-                    <div>
-                      <p className="font-mono text-[10px] uppercase tracking-widest text-on-surface-variant mb-0.5">
-                        {isCurrent ? 'Current Period' : 'Week ending'}
-                      </p>
-                      <p className="font-mono text-sm font-medium text-on-surface">
-                        {formatWeekLabel(sat)}
-                      </p>
-                    </div>
-                    <div className="flex items-center gap-3">
-                      <span className="font-heading font-bold text-2xl text-primary-container tracking-tighter">
-                        {weekTotal.toFixed(1)}{' '}
-                        <span className="text-sm font-mono text-on-surface-variant">hrs</span>
-                      </span>
-                      <span className="material-symbols-outlined text-on-surface-variant">
-                        {isOpen ? 'expand_less' : 'expand_more'}
-                      </span>
+                  <div className="flex items-stretch">
+                    <div className={`w-1.5 shrink-0 ${isCurrent ? 'bg-primary-container' : 'bg-on-secondary-fixed/20'}`} />
+                    <div className="flex-1 flex items-center justify-between px-5 py-4">
+                      <div>
+                        <p className="font-mono text-[10px] uppercase tracking-widest text-on-secondary-fixed/50 mb-0.5">
+                          {isCurrent ? 'Current Period' : 'Week ending'}
+                        </p>
+                        <p className="font-heading font-bold text-2xl uppercase tracking-tighter text-on-secondary-fixed leading-none">
+                          {formatWeekLabel(sat)}
+                        </p>
+                      </div>
+                      <div className="flex items-center gap-3">
+                        <div className="text-right">
+                          <p className="font-mono text-[10px] uppercase tracking-widest text-on-secondary-fixed/50 mb-0.5">Total</p>
+                          <p className="font-heading font-bold text-2xl text-primary-container tracking-tighter leading-none">
+                            {weekTotal.toFixed(1)}
+                            <span className="font-mono text-xs text-on-secondary-fixed/40 ml-1">hrs</span>
+                          </p>
+                        </div>
+                        <span className="material-symbols-outlined text-on-secondary-fixed/40">
+                          {isOpen ? 'expand_less' : 'expand_more'}
+                        </span>
+                      </div>
                     </div>
                   </div>
                 </button>
 
                 {/* Expanded entries */}
                 {isOpen && (
-                  <div className="overflow-x-auto">
-                    <table className="w-full text-sm border-collapse">
-                      <thead>
-                        <tr className="bg-surface-container text-on-surface-variant">
-                          <th className="font-mono text-[10px] uppercase tracking-widest text-left px-5 py-2 w-[35%]">
-                            Job
-                          </th>
-                          <th className="font-mono text-[10px] uppercase tracking-widest text-left px-3 py-2">
-                            Date
-                          </th>
-                          <th className="font-mono text-[10px] uppercase tracking-widest text-left px-3 py-2">
-                            In → Out
-                          </th>
-                          <th className="font-mono text-[10px] uppercase tracking-widest text-right px-5 py-2">
-                            Hrs
-                          </th>
-                        </tr>
-                      </thead>
-                      <tbody>
-                        {entries.map(entry => {
-                          const jobName = jobs.find(j => j.id === entry.jobId)?.name ?? entry.jobId
-                          return (
-                            <tr
-                              key={entry.id}
-                              className="border-t border-surface-container-low"
-                            >
-                              <td className="px-5 py-3 font-sans text-xs text-on-surface font-semibold truncate max-w-0 w-[35%]">
+                  <div className="bg-secondary-fixed border-t border-on-secondary-fixed/10">
+                    {entries.map((entry, i) => {
+                      const jobName = jobs.find(j => j.id === entry.jobId)?.name ?? entry.jobId
+                      return (
+                        <div
+                          key={entry.id}
+                          className={`flex items-center gap-0 ${
+                            i > 0 ? 'border-t border-on-secondary-fixed/10' : ''
+                          }`}
+                        >
+                          <div className="w-1.5 shrink-0 bg-transparent" />
+                          <div className="flex-1 flex items-center justify-between px-5 py-3 gap-4">
+                            <div className="min-w-0 flex-1">
+                              <p className="font-heading font-bold text-base uppercase tracking-tighter text-on-secondary-fixed leading-none truncate">
                                 {jobName}
-                              </td>
-                              <td className="px-3 py-3 font-mono text-[11px] text-on-surface-variant whitespace-nowrap">
+                              </p>
+                              <p className="font-mono text-[10px] text-on-secondary-fixed/50 uppercase tracking-wider mt-0.5">
                                 {formatEntryDate(entry.date)}
-                              </td>
-                              <td className="px-3 py-3 font-mono text-[11px] text-on-surface-variant whitespace-nowrap">
-                                {formatTime(entry.clockIn)}
-                                {entry.clockOut ? ` → ${formatTime(entry.clockOut)}` : ' → —'}
-                              </td>
-                              <td className="px-5 py-3 font-mono text-sm text-primary-container font-bold text-right whitespace-nowrap">
+                              </p>
+                            </div>
+                            <div className="text-right shrink-0">
+                              <p className="font-mono text-[11px] text-on-secondary-fixed/60 uppercase">
+                                {formatTime(entry.clockIn)}{entry.clockOut ? ` → ${formatTime(entry.clockOut)}` : ' → —'}
+                              </p>
+                              <p className="font-heading font-bold text-xl text-primary-container tracking-tighter leading-none mt-0.5">
                                 {entry.hours != null ? entry.hours.toFixed(1) : '—'}
-                              </td>
-                            </tr>
-                          )
-                        })}
-                      </tbody>
-                    </table>
+                                <span className="font-mono text-[10px] text-on-secondary-fixed/40 ml-1">hrs</span>
+                              </p>
+                            </div>
+                          </div>
+                        </div>
+                      )
+                    })}
                   </div>
                 )}
               </div>
             )
           })}
-        </div>
-
-        {/* All-time total */}
-        <div className="mx-5 my-8 flex items-center justify-between border-l-4 border-primary-container px-5 py-4 bg-surface-container-low">
-          <span className="font-mono text-xs text-on-surface-variant uppercase tracking-widest">
-            All-time total
-          </span>
-          <span className="font-heading font-bold text-3xl text-primary-container tracking-tighter">
-            {totalAllTime.toFixed(1)}{' '}
-            <span className="font-mono text-sm text-on-surface-variant">hrs</span>
-          </span>
         </div>
 
       </div>

@@ -94,13 +94,7 @@ export default function HomePage() {
           </Link>
         </section>
 
-        {/* Feedback */}
-        <div className="flex justify-center">
-          <Link href="/feedback" className="inline-flex items-center gap-2 text-on-surface-variant/50 text-xs font-mono hover:text-on-surface-variant transition-colors py-2">
-            <span className="material-symbols-outlined text-sm">chat_bubble</span>
-            <span>Give app feedback</span>
-          </Link>
-        </div>
+
       </main>
 
     </div>

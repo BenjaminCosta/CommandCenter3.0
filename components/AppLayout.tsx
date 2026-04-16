@@ -52,7 +52,7 @@ function BottomNavBar({
 }) {
   return (
     <nav className="fixed bottom-0 left-0 right-0 z-50 safe-bottom">
-      <div className="max-w-lg mx-auto flex items-stretch justify-around h-17 bg-background border-t border-surface-container-low">
+      <div className="max-w-lg mx-auto flex items-stretch justify-around h-14 bg-background border-t border-surface-container-low">
         {items.map((item) => {
           const isActive = activeId === item.id
 
@@ -61,7 +61,7 @@ function BottomNavBar({
               <Link
                 key={item.id}
                 href={item.href}
-                className="flex flex-col items-center justify-center gap-1 w-full h-full bg-primary-container text-on-primary-container"
+                className="flex flex-col items-center justify-center gap-0.5 w-full h-full bg-primary-container text-on-primary-container"
               >
                 <span className="material-symbols-outlined text-xl" style={{ fontVariationSettings: "'FILL' 1" }}>
                   {item.icon}
@@ -75,7 +75,7 @@ function BottomNavBar({
             <Link
               key={item.id}
               href={item.href}
-              className={`flex flex-col items-center justify-center gap-1 w-full h-full transition-colors hover:bg-surface-container ${
+              className={`flex flex-col items-center justify-center gap-0.5 w-full h-full transition-colors hover:bg-surface-container ${
                 isActive ? 'bg-surface-container-low' : ''
               }`}
             >
@@ -269,7 +269,7 @@ export function AppLayout({ children }: { children: React.ReactNode }) {
           isAdminView={false}
           onToggle={toggleAdminView}
         />
-        <div className="flex-1 pb-17">
+        <div className="flex-1 pb-14">
           {children}
         </div>
         <BottomNavBar items={workerNavItems} activeId={workerActive} />
@@ -286,7 +286,7 @@ export function AppLayout({ children }: { children: React.ReactNode }) {
         isAdminView={isAdminView}
         onToggle={toggleAdminView}
       />
-      <div className="flex-1 pb-17">
+      <div className="flex-1 pb-14">
         {children}
       </div>
       <BottomNavBar items={adminNavItems} activeId={adminActive} />
