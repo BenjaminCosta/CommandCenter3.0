@@ -148,6 +148,8 @@ export function AppLayout({ children }: { children: React.ReactNode }) {
 
   const worker = workers[0]
 
+  // Re-read sessionStorage whenever pathname changes so that a login redirect
+  // (/ → /admin) picks up the role written just before router.push().
   useEffect(() => {
     const storedRole = (sessionStorage.getItem('userRole') as UserRole) || 'worker'
     const storedView = sessionStorage.getItem('adminViewActive')
@@ -155,13 +157,15 @@ export function AppLayout({ children }: { children: React.ReactNode }) {
     const resolvedAdminView = storedRole === 'admin'
       ? (storedView === null ? true : storedView === 'true')
       : false
-    const desktop    = window.innerWidth >= 1024
 
     setRole(storedRole)
     setIsAdminView(resolvedAdminView)
-    setIsDesktop(desktop)
     setMounted(true)
+  }, [pathname])
 
+  // Desktop detection — runs once, persists across navigations
+  useEffect(() => {
+    setIsDesktop(window.innerWidth >= 1024)
     const onResize = () => setIsDesktop(window.innerWidth >= 1024)
     window.addEventListener('resize', onResize)
     return () => window.removeEventListener('resize', onResize)
@@ -229,7 +233,10 @@ export function AppLayout({ children }: { children: React.ReactNode }) {
             <p className="font-mono text-[10px] text-on-surface-variant uppercase tracking-widest">
               {worker.name}
             </p>
-            <button className="flex items-center gap-2 text-on-surface-variant hover:text-error transition-colors w-full text-left">
+            <button
+              onClick={() => { sessionStorage.clear(); router.push('/') }}
+              className="flex items-center gap-2 text-on-surface-variant hover:text-error transition-colors w-full text-left"
+            >
               <span className="material-symbols-outlined text-xl">logout</span>
               <span className="font-heading font-bold text-base uppercase tracking-tighter">Log Out</span>
             </button>
