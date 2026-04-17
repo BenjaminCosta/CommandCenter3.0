@@ -1,7 +1,7 @@
 'use client'
 
-import { useState } from 'react'
-import { contacts, workers, type Contact } from '@/lib/data'
+import { useState, useMemo } from 'react'
+import { contacts, type Contact } from '@/lib/data'
 import { Search } from 'lucide-react'
 
 const roleOrder: Contact['role'][] = ['PM', 'Super', 'Worker', 'Admin']
@@ -18,19 +18,20 @@ function getInitials(name: string): string {
 
 export default function RolodexPage() {
   const [search, setSearch] = useState('')
-  const worker = workers[0]
 
-  const filtered = contacts.filter(
-    c =>
-      c.name.toLowerCase().includes(search.toLowerCase()) ||
-      c.role.toLowerCase().includes(search.toLowerCase())
-  )
-
-  const grouped = roleOrder.reduce((acc, role) => {
-    const group = filtered.filter(c => c.role === role)
-    if (group.length > 0) acc[role] = group
-    return acc
-  }, {} as Record<string, Contact[]>)
+  const grouped = useMemo(() => {
+    const q = search.toLowerCase()
+    const filtered = contacts.filter(
+      c =>
+        c.name.toLowerCase().includes(q) ||
+        c.role.toLowerCase().includes(q)
+    )
+    return roleOrder.reduce((acc, role) => {
+      const group = filtered.filter(c => c.role === role)
+      if (group.length > 0) acc[role] = group
+      return acc
+    }, {} as Record<string, Contact[]>)
+  }, [search])
 
   return (
     <div className="min-h-screen bg-background flex flex-col">
@@ -52,8 +53,8 @@ export default function RolodexPage() {
 
         {/* Contact groups */}
         <div className="px-4 py-4 space-y-8">
-          {(Object.entries(grouped) as [Contact['role'], Contact[]][]).map(([role, group]) => (
-            <div key={role}>
+          {(Object.entries(grouped) as [Contact['role'], Contact[]][]).map(([role, group], groupIndex) => (
+            <div key={role} className="card-stagger" style={{"--card-i": groupIndex} as React.CSSProperties}>
               {/* Section header */}
               <div className="flex items-center gap-3 mb-3 px-2">
                 <span className="font-mono text-[10px] uppercase tracking-widest text-on-surface-variant whitespace-nowrap">
@@ -65,8 +66,8 @@ export default function RolodexPage() {
 
               {/* Contact cards */}
               <div className="flex flex-col gap-px">
-                {group.map(contact => (
-                  <div key={contact.id} className="bg-surface-container-low">
+                {group.map((contact, contactIndex) => (
+                  <div key={contact.id} className="bg-surface-container-low card-stagger" style={{"--card-i": contactIndex} as React.CSSProperties}>
                     <div className="flex items-stretch min-h-18">
                       {/* Avatar block */}
                       <div className="w-16 bg-surface-container-high shrink-0 flex items-center justify-center">

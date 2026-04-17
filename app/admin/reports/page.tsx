@@ -1,18 +1,21 @@
 'use client'
 
-import { useState } from 'react'
+import { useState, useMemo } from 'react'
 import { dailyReports, jobs, workers, formatDate } from '@/lib/data'
+
+const jobMap = new Map(jobs.map(j => [j.id, j]))
+const workerMap = new Map(workers.map(w => [w.id, w]))
+const sortedReports = [...dailyReports].sort((a, b) => b.createdAt - a.createdAt)
 
 export default function AdminReportsPage() {
   const [search, setSearch] = useState('')
 
-  const allReports = [...dailyReports]
-    .sort((a, b) => b.createdAt - a.createdAt)
-    .filter(r => {
-      if (!search) return true
-      const job    = jobs.find(j => j.id === r.jobId)
-      const worker = workers.find(w => w.id === r.workerId)
-      const q = search.toLowerCase()
+  const allReports = useMemo(() => {
+    if (!search) return sortedReports
+    const q = search.toLowerCase()
+    return sortedReports.filter(r => {
+      const job    = jobMap.get(r.jobId)
+      const worker = workerMap.get(r.workerId)
       return (
         r.workerName.toLowerCase().includes(q) ||
         job?.name.toLowerCase().includes(q) ||
@@ -20,6 +23,7 @@ export default function AdminReportsPage() {
         r.date.includes(q)
       )
     })
+  }, [search])
 
   return (
     <div className="min-h-screen bg-background">
@@ -55,7 +59,7 @@ export default function AdminReportsPage() {
       {/* Report list */}
       <div className="px-4 pb-24">
         {allReports.map(report => {
-          const job = jobs.find(j => j.id === report.jobId)
+          const job = jobMap.get(report.jobId)
           return (
             <div
               key={report.id}

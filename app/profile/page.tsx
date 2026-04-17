@@ -1,6 +1,6 @@
 'use client'
 
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useMemo } from 'react'
 import Link from 'next/link'
 import { useRouter } from 'next/navigation'
 import { workers, jobs, timeEntries } from '@/lib/data'
@@ -20,18 +20,22 @@ export default function ProfilePage() {
     if (stored) setCurrentJobId(stored)
   }, [])
 
-  const job = jobs.find(j => j.id === currentJobId)
-  const initials = worker.name.split(' ').map(n => n[0]).join('').toUpperCase().slice(0, 2)
+  const job = useMemo(() => jobs.find(j => j.id === currentJobId), [currentJobId])
+  const initials = useMemo(
+    () => worker.name.split(' ').map(n => n[0]).join('').toUpperCase().slice(0, 2),
+    [worker.name]
+  )
   const canChangeJob = worker.appLevel === 'Master' || worker.appLevel === 'Neo'
 
-  // Weekly hours: entries this calendar week (Mon–Sun)
-  const now = new Date()
-  const startOfWeek = new Date(now)
-  startOfWeek.setDate(now.getDate() - ((now.getDay() + 6) % 7))
-  startOfWeek.setHours(0, 0, 0, 0)
-  const weeklyHours = timeEntries
-    .filter(e => e.workerId === worker.id && new Date(e.date + 'T12:00:00') >= startOfWeek)
-    .reduce((s, e) => s + (e.hours ?? 0), 0)
+  const weeklyHours = useMemo(() => {
+    const now = new Date()
+    const startOfWeek = new Date(now)
+    startOfWeek.setDate(now.getDate() - ((now.getDay() + 6) % 7))
+    startOfWeek.setHours(0, 0, 0, 0)
+    return timeEntries
+      .filter(e => e.workerId === worker.id && new Date(e.date + 'T12:00:00') >= startOfWeek)
+      .reduce((s, e) => s + (e.hours ?? 0), 0)
+  }, [worker.id])
 
   const menuItems = [
     { label: 'My Hours', href: '/hours', icon: 'schedule' },
@@ -47,7 +51,7 @@ export default function ProfilePage() {
       <main className="flex-1 max-w-lg mx-auto w-full pb-28">
 
         {/* Hero section */}
-        <section className="flex flex-col items-center py-6 px-6 bg-background border-b border-surface-container-low">
+        <section className="flex flex-col items-center py-6 px-6 bg-background border-b border-surface-container-low card-stagger" style={{"--card-i": 0} as React.CSSProperties}>
           {/* Avatar */}
           <div className="w-24 h-24 bg-primary-container flex items-center justify-center mb-3">
             <span className="font-heading font-bold text-4xl tracking-tighter text-on-primary-container leading-none">
@@ -73,7 +77,7 @@ export default function ProfilePage() {
         </section>
 
         {/* Stats bento */}
-        <section className="px-6 grid grid-cols-2 gap-2 pt-3 pb-1">
+        <section className="px-6 grid grid-cols-2 gap-2 pt-3 pb-1 card-stagger" style={{"--card-i": 1} as React.CSSProperties}>
           <div className="bg-surface-container-low p-4 flex flex-col justify-between h-20">
             <span className="font-mono text-[10px] text-on-surface-variant uppercase tracking-widest">
               This Week

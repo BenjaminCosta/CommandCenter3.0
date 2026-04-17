@@ -29,7 +29,7 @@ export default function HomePage() {
       <main className="flex-1 max-w-lg mx-auto w-full pt-4 pb-24 px-6 flex flex-col">
 
         {/* Greeting */}
-        <section className="mb-6">
+        <section className="mb-6 card-stagger" style={{"--card-i": 0} as React.CSSProperties}>
           <h1 className="font-heading text-5xl font-bold leading-none tracking-tighter uppercase mb-3 text-on-surface">
             {greeting},<br />{firstName}
           </h1>
@@ -38,7 +38,7 @@ export default function HomePage() {
 
         {/* Current Assignment */}
         {assignedJob && (
-          <section className="mb-5">
+          <section className="mb-5 card-stagger" style={{"--card-i": 1} as React.CSSProperties}>
             <p className="font-mono text-xs tracking-[0.2em] mb-4 text-primary-container uppercase">CURRENT ASSIGNMENT</p>
             <div className="bg-secondary-fixed text-on-secondary-fixed p-6 border-l-12 border-primary-container relative overflow-hidden">
               <h2 className="font-heading text-3xl font-bold leading-tight mb-4 uppercase">{assignedJob.name}</h2>
@@ -57,7 +57,7 @@ export default function HomePage() {
         )}
 
         {/* Primary CTA */}
-        <section className="flex flex-col gap-6 min-h-56 mb-4">
+        <section className="flex flex-col gap-6 min-h-56 mb-4 card-stagger" style={{"--card-i": 2} as React.CSSProperties}>
           {isClockedIn ? (
             <>
               <div className="bg-surface-container-low border-l-4 border-l-green p-5">

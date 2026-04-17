@@ -2,11 +2,9 @@ import withPWA from '@ducanh2912/next-pwa'
 
 /** @type {import('next').NextConfig} */
 const nextConfig = {
-  typescript: {
-    ignoreBuildErrors: true,
-  },
-  images: {
-    unoptimized: true,
+  poweredByHeader: false,
+  experimental: {
+    optimizePackageImports: ['lucide-react', '@radix-ui/react-slot', '@radix-ui/react-toast'],
   },
   turbopack: {},
 }

@@ -6,8 +6,7 @@ import Link from 'next/link'
 import { workers, jobs } from '@/lib/data'
 import { ArrowLeft } from 'lucide-react'
 
-const WAREHOUSE_BG =
-  "https://lh3.googleusercontent.com/aida-public/AB6AXuAVhuheu6sFfN0qvXrmDWdNwHYHmjCoVqmJzXuSRdV6_TmNnB4VFoPQVIszSqyFprvrWAjqGHmBk9ld9dISWUJkRhAdZa7z2YUFQYFFXiKzLQCVgsR71wBC2PaPHEqXY59DT0IAgQfHXr4dMRn2L4kCyxDDOqqi7Bo91QQvnU8Hk7rI2tL_RpBSZjO1h8K9BDbykQCj3j_CeIsyfm_a8GaKCz8jOvQdOieQygzO5oBg1IdI1LfR6GQq5iJqudxFjSyIVeEOhG1pbVt0"
+const WAREHOUSE_BG = "/warehouse-bg.jpg"
 
 export default function ClockInPage() {
   const router = useRouter()
@@ -38,7 +37,7 @@ export default function ClockInPage() {
     return (
       <div className="min-h-screen bg-background flex flex-col items-center justify-center p-6 fade-in">
         <div className="text-center">
-          <div className="w-28 h-28 border-4 border-tertiary flex items-center justify-center mx-auto mb-8 check-pop">
+          <div className="w-28 h-28 border-4 border-tertiary flex items-center justify-center mx-auto mb-8 check-pop success-ring">
             <span
               className="material-symbols-outlined text-6xl text-tertiary"
               style={{ fontVariationSettings: "'FILL' 1" }}
@@ -182,6 +181,7 @@ export default function ClockInPage() {
 
       {/* Footer CTA */}
       <footer className="shrink-0 safe-bottom">
+        <div className="footer-accent-bar" />
         <button
           onClick={handleConfirm}
           disabled={!photoTaken || isSubmitting}

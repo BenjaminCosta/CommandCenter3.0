@@ -1,4 +1,18 @@
+import { memo } from 'react'
 import { Job } from '@/lib/data'
+
+const borderColorMap: Record<string, string> = {
+  'IN PROGRESS': 'border-l-green',
+  'PRE CONSTRUCTION': 'border-l-outline',
+  'COMPLETED': 'border-l-surface-container-highest',
+  'ALERT': 'border-l-red',
+}
+
+const frequencyBgMap: Record<string, string> = {
+  'DAILY': 'bg-surface-container-highest text-on-surface',
+  'HOURLY': 'bg-primary-container text-on-primary-container',
+  'WEEKLY': 'bg-secondary-container text-on-secondary-container',
+}
 
 interface JobCardProps {
   job: Job
@@ -8,25 +22,15 @@ interface JobCardProps {
   showLastActivity?: boolean
 }
 
-export function JobCard({ 
+export const JobCard = memo(function JobCard({
   job, 
   variant = 'default',
   showPM = true,
   showSuper = false,
   showLastActivity = false
 }: JobCardProps) {
-  const borderColor = {
-    'IN PROGRESS': 'border-l-green',
-    'PRE CONSTRUCTION': 'border-l-outline',
-    'COMPLETED': 'border-l-surface-container-highest',
-    'ALERT': 'border-l-red',
-  }[job.status]
-
-  const frequencyBg = {
-    'DAILY': 'bg-surface-container-highest text-on-surface',
-    'HOURLY': 'bg-primary-container text-on-primary-container',
-    'WEEKLY': 'bg-secondary-container text-on-secondary-container',
-  }[job.reportFrequency]
+  const borderColor = borderColorMap[job.status]
+  const frequencyBg = frequencyBgMap[job.reportFrequency]
 
   return (
     <div className={`bg-surface-container-low border-l-4 ${borderColor} p-5 ${variant === 'compact' ? 'py-4' : ''}`}>
@@ -66,4 +70,4 @@ export function JobCard({
       </div>
     </div>
   )
-}
+})

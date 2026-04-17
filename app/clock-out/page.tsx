@@ -45,7 +45,7 @@ export default function ClockOutPage() {
     return (
       <div className="min-h-screen bg-background flex flex-col items-center justify-center p-6 fade-in">
         <div className="text-center">
-          <div className="w-28 h-28 border-4 border-primary-container flex items-center justify-center mx-auto mb-8 check-pop">
+          <div className="w-28 h-28 border-4 border-primary-container flex items-center justify-center mx-auto mb-8 check-pop success-ring">
             <Check className="w-14 h-14 text-primary-container" strokeWidth={3} />
           </div>
           <h1 className="font-heading text-5xl font-bold text-on-surface mb-3 uppercase tracking-tighter">{"YOU'RE OUT"}</h1>
@@ -106,6 +106,7 @@ export default function ClockOutPage() {
 
       {/* Footer CTA */}
       <footer className="shrink-0 safe-bottom border-t-2 border-surface-container-low">
+        <div className="footer-accent-bar" />
         <button
           onClick={handleClockOut}
           disabled={isSubmitting}

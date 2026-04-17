@@ -1,8 +1,10 @@
 'use client'
 
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useMemo } from 'react'
 import { useRouter } from 'next/navigation'
 import { workers, dailyReports, jobs, formatDate, type DailyReport } from '@/lib/data'
+
+const jobMap = new Map(jobs.map(j => [j.id, j]))
 
 const TWO_HOURS_MS = 2 * 60 * 60 * 1000
 
@@ -22,13 +24,14 @@ export default function ReportsPage() {
     return () => clearInterval(interval)
   }, [])
 
-  // Merge seed + session, dedupe by id (session wins), filter to this worker, sort desc by date
-  const seedReports = dailyReports.filter(r => r.workerId === worker.id)
-  const sessionIds = new Set(sessionReports.map(r => r.id))
-  const merged = [
-    ...sessionReports.filter(r => r.workerId === worker.id),
-    ...seedReports.filter(r => !sessionIds.has(r.id)),
-  ].sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime())
+  const merged = useMemo(() => {
+    const seedReports = dailyReports.filter(r => r.workerId === worker.id)
+    const sessionIds = new Set(sessionReports.map(r => r.id))
+    return [
+      ...sessionReports.filter(r => r.workerId === worker.id),
+      ...seedReports.filter(r => !sessionIds.has(r.id)),
+    ].sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime())
+  }, [sessionReports, worker.id])
 
   const handleEdit = (report: DailyReport) => {
     sessionStorage.setItem('editReport', JSON.stringify(report))
@@ -58,7 +61,7 @@ export default function ReportsPage() {
         ) : (
           <div className="space-y-3">
             {merged.map(report => {
-              const job = jobs.find(j => j.id === report.jobId)
+              const job = jobMap.get(report.jobId)
               const isEditable = now - report.createdAt < TWO_HOURS_MS
               const isEdited = !!report.editedAt
 

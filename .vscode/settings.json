@@ -1,0 +1,52 @@
+{
+  "typescript.tsserver.maxTsServerMemory": 4096,
+  "typescript.tsserver.experimental.enableProjectDiagnostics": false,
+  "typescript.preferences.includePackageJsonAutoImports": "off",
+  "javascript.preferences.includePackageJsonAutoImports": "off",
+  "git.openRepositoryInParentFolders": "never",
+  "files.watcherExclude": {
+    "**/.git/objects/**": true,
+    "**/.git/subtree-cache/**": true,
+    "**/node_modules/**": true,
+    "**/.next/**": true,
+    "**/.vercel/**": true,
+    "**/.pnpm-store/**": true,
+    "**/.yarn/**": true,
+    "**/.swc/**": true,
+    "**/dist/**": true,
+    "**/build/**": true,
+    "**/.turbo/**": true,
+    "**/.cache/**": true,
+    "**/.eslintcache": true,
+    "**/coverage/**": true
+  },
+  "search.exclude": {
+    "**/node_modules": true,
+    "**/.next": true,
+    "**/.vercel": true,
+    "**/.pnpm-store": true,
+    "**/.yarn": true,
+    "**/.swc": true,
+    "**/dist": true,
+    "**/build": true,
+    "**/.turbo": true,
+    "**/.cache": true,
+    "**/.eslintcache": true,
+    "**/coverage": true,
+    "**/pnpm-lock.yaml": false
+  },
+  "files.exclude": {
+    "**/node_modules": true,
+    "**/.next": true,
+    "**/.vercel": true,
+    "**/.pnpm-store": true,
+    "**/.yarn": true,
+    "**/.swc": true,
+    "**/dist": true,
+    "**/build": true,
+    "**/.turbo": true,
+    "**/.cache": true,
+    "**/.eslintcache": true,
+    "**/coverage": true
+  }
+}

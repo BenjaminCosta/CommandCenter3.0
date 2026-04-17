@@ -51,7 +51,7 @@ export default function CurrentJobPage() {
         <div className="max-w-lg mx-auto p-5 flex flex-col gap-5">
 
           {/* Hero card — cream, big name, border-left orange */}
-          <div className="bg-secondary-fixed text-on-secondary-fixed border-l-8 border-primary-container px-7 py-8">
+          <div className="bg-secondary-fixed text-on-secondary-fixed border-l-8 border-primary-container px-7 py-8 card-stagger" style={{"--card-i": 0} as React.CSSProperties}>
             <div className="flex justify-between items-start gap-4">
               <div className="flex-1 min-w-0">
                 <p className="font-mono text-xs font-bold tracking-widest text-on-secondary-fixed/50 uppercase mb-1">
@@ -119,7 +119,7 @@ export default function CurrentJobPage() {
 
           {/* Address detail row */}
           {job.address && (
-            <div className="bg-surface-container-low px-5 py-4 border-l-4 border-outline-variant">
+            <div className="bg-surface-container-low px-5 py-4 border-l-4 border-outline-variant card-stagger" style={{"--card-i": 1} as React.CSSProperties}>
               <p className="font-mono text-[10px] uppercase tracking-widest text-on-surface-variant mb-1">Address</p>
               <p className="font-sans text-sm font-semibold text-on-surface">{job.address}</p>
             </div>
@@ -129,7 +129,8 @@ export default function CurrentJobPage() {
           {canChangeJob && (
             <button
               onClick={() => router.push('/profile/change-job')}
-              className="h-16 w-full flex items-center justify-between px-6 bg-primary-container hover:bg-primary text-on-primary-container btn-press transition-colors"
+              className="h-16 w-full flex items-center justify-between px-6 bg-primary-container hover:bg-primary text-on-primary-container btn-press transition-colors card-stagger"
+              style={{"--card-i": 2} as React.CSSProperties}
             >
               <span className="font-heading font-bold text-2xl uppercase tracking-tighter">Change Job</span>
               <span className="material-symbols-outlined">swap_horiz</span>

@@ -45,7 +45,7 @@ export default function ChangeJobPage() {
         <div className="max-w-lg mx-auto px-5 pt-6 pb-10">
 
           {/* Page heading */}
-          <div className="mb-7">
+          <div className="mb-7 card-stagger" style={{"--card-i": 0} as React.CSSProperties}>
             <span className="font-mono text-xs uppercase tracking-widest text-primary-container block mb-1">
               Active Session
             </span>
@@ -56,7 +56,7 @@ export default function ChangeJobPage() {
 
           {/* Current job card — highlighted */}
           {currentJob && (
-            <div className="bg-secondary-fixed p-6 flex justify-between items-center mb-4">
+            <div className="bg-secondary-fixed p-6 flex justify-between items-center mb-4 card-stagger" style={{"--card-i": 1} as React.CSSProperties}>
               <div>
                 <span className="font-mono text-[10px] font-bold uppercase text-on-secondary-fixed/60 block mb-1">
                   Project ID: {currentJob.id.toUpperCase()}
@@ -91,12 +91,13 @@ export default function ChangeJobPage() {
 
           {/* Other jobs */}
           <div className="flex flex-col gap-3">
-            {otherJobs.map((job) => (
+            {otherJobs.map((job, i) => (
               <button
                 key={job.id}
                 onClick={() => handleSelect(job.id)}
                 disabled={confirming}
-                className="group bg-secondary-fixed p-6 flex justify-between items-center hover:bg-primary-container transition-colors text-left w-full btn-press"
+                className="group bg-secondary-fixed p-6 flex justify-between items-center hover:bg-primary-container transition-colors text-left w-full btn-press card-stagger"
+                style={{"--card-i": i + 2} as React.CSSProperties}
               >
                 <div>
                   <span className="font-mono text-[10px] font-bold uppercase text-on-secondary-fixed/60 group-hover:text-on-primary-container/70 block mb-1">

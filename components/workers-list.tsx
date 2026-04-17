@@ -1,22 +1,35 @@
 'use client'
 
-import { useState, useEffect } from 'react'
+import { useState, memo, useMemo, useCallback } from 'react'
 import { useRouter } from 'next/navigation'
 import { workers, jobs, timeEntries, type Worker } from '@/lib/data'
 
 // ─── Helpers ──────────────────────────────────────────────────────────────────
 const TODAY = new Date().toISOString().slice(0, 10)
+const jobMap = new Map(jobs.map(j => [j.id, j]))
 
 function isClockedInToday(workerId: string): boolean {
   return timeEntries.some((e) => e.workerId === workerId && e.date === TODAY)
 }
 
 function getJobName(jobId: string): string {
-  return jobs.find((j) => j.id === jobId)?.name ?? '—'
+  return jobMap.get(jobId)?.name ?? '—'
+}
+
+// ─── Row ──────────────────────────────────────────────────────────────────────
+function Row({ label, value }: { label: string; value: string }) {
+  return (
+    <div>
+      <p className="font-mono text-[10px] uppercase tracking-widest text-on-surface-variant mb-0.5">
+        {label}
+      </p>
+      <p className="font-sans text-sm font-semibold text-on-surface">{value}</p>
+    </div>
+  )
 }
 
 // ─── Detail Panel (slide-up on mobile, slide-in on desktop) ──────────────────
-function WorkerDetail({
+const WorkerDetail = memo(function WorkerDetail({
   worker,
   onClose,
 }: {
@@ -24,7 +37,7 @@ function WorkerDetail({
   onClose: () => void
 }) {
   const router = useRouter()
-  const job = jobs.find((j) => j.id === worker.assignedJobId)
+  const job = jobMap.get(worker.assignedJobId)
   const clockedIn = isClockedInToday(worker.id)
   const initial = worker.name.charAt(0).toUpperCase()
 
@@ -79,11 +92,11 @@ function WorkerDetail({
         {/* Body */}
         <div className="flex-1 overflow-y-auto px-5 py-6 flex flex-col gap-5">
           <div className="flex flex-col gap-4">
-            <Row label="Email"     value={worker.email} />
-            <Row label="App Level" value={worker.appLevel} />
+            <Row label="Email"       value={worker.email} />
+            <Row label="App Level"   value={worker.appLevel} />
             <Row label="Current Job" value={job?.name ?? '—'} />
-            {job && <Row label="Location"    value={`${job.city}, ${job.state}`} />}
-            {job && <Row label="PM"          value={job.pm} />}
+            {job && <Row label="Location" value={`${job.city}, ${job.state}`} />}
+            {job && <Row label="PM"       value={job.pm} />}
           </div>
         </div>
 
@@ -103,21 +116,10 @@ function WorkerDetail({
       </div>
     </>
   )
-}
-
-function Row({ label, value }: { label: string; value: string }) {
-  return (
-    <div>
-      <p className="font-mono text-[10px] uppercase tracking-widest text-on-surface-variant mb-0.5">
-        {label}
-      </p>
-      <p className="font-sans text-sm font-semibold text-on-surface">{value}</p>
-    </div>
-  )
-}
+})
 
 // ─── Worker Row ───────────────────────────────────────────────────────────────
-function WorkerRow({
+const WorkerRow = memo(function WorkerRow({
   worker,
   onClick,
 }: {
@@ -169,20 +171,24 @@ function WorkerRow({
       </div>
     </button>
   )
-}
+})
 
 // ─── Main exported component ──────────────────────────────────────────────────
 export function WorkersList() {
   const [selected, setSelected] = useState<Worker | null>(null)
 
-  // Sort: clocked-in first, then alphabetical within each group
-  const sorted = [...workers].sort((a, b) => {
-    const aIn = isClockedInToday(a.id)
-    const bIn = isClockedInToday(b.id)
-    if (aIn && !bIn) return -1
-    if (!aIn && bIn) return 1
-    return a.name.localeCompare(b.name)
-  })
+  const sorted = useMemo(() =>
+    [...workers].sort((a, b) => {
+      const aIn = isClockedInToday(a.id)
+      const bIn = isClockedInToday(b.id)
+      if (aIn && !bIn) return -1
+      if (!aIn && bIn) return 1
+      return a.name.localeCompare(b.name)
+    }),
+    []
+  )
+
+  const handleClose = useCallback(() => setSelected(null), [])
 
   return (
     <div className="relative">
@@ -195,7 +201,7 @@ export function WorkersList() {
       ))}
 
       {selected && (
-        <WorkerDetail worker={selected} onClose={() => setSelected(null)} />
+        <WorkerDetail worker={selected} onClose={handleClose} />
       )}
     </div>
   )

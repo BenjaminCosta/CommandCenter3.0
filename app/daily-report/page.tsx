@@ -6,8 +6,7 @@ import Link from 'next/link'
 import { workers, jobs, type DailyReport } from '@/lib/data'
 import { ArrowLeft, ArrowRight } from 'lucide-react'
 
-const WAREHOUSE_BG =
-  'https://lh3.googleusercontent.com/aida-public/AB6AXuAVhuheu6sFfN0qvXrmDWdNwHYHmjCoVqmJzXuSRdV6_TmNnB4VFoPQVIszSqyFprvrWAjqGHmBk9ld9dISWUJkRhAdZa7z2YUFQYFFXiKzLQCVgsR71wBC2PaPHEqXY59DT0IAgQfHXr4dMRn2L4kCyxDDOqqi7Bo91QQvnU8Hk7rI2tL_RpBSZjO1h8K9BDbykQCj3j_CeIsyfm_a8GaKCz8jOvQdOieQygzO5oBg1IdI1LfR6GQq5iJqudxFjSyIVeEOhG1pbVt0'
+const WAREHOUSE_BG = "/warehouse-bg.jpg"
 
 type Step = 1 | 2 | 3 | 4
 
@@ -113,9 +112,9 @@ export default function DailyReportPage() {
 
   if (showSuccess) {
     return (
-      <div className="h-dvh bg-background flex flex-col items-center justify-center p-6">
+      <div className="h-dvh bg-background flex flex-col items-center justify-center p-6 fade-in">
         <div className="text-center w-full max-w-sm">
-          <div className="w-28 h-28 border-4 border-primary-container flex items-center justify-center mx-auto mb-8">
+          <div className="w-28 h-28 border-4 border-primary-container flex items-center justify-center mx-auto mb-8 check-pop success-ring">
             <span className="material-symbols-outlined text-6xl text-primary-container" style={{ fontVariationSettings: "'FILL' 1" }}>check_circle</span>
           </div>
           <p className="font-mono text-xs text-on-surface-variant uppercase tracking-widest mb-4">
@@ -388,6 +387,7 @@ export default function DailyReportPage() {
 
       {/* Footer CTA */}
       <div className="shrink-0 safe-bottom border-t-2 border-surface-container-low">
+        <div className="footer-accent-bar" />
         {step < 4 ? (
           <button
             onClick={handleNext}

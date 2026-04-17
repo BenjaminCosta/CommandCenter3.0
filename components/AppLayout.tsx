@@ -1,6 +1,6 @@
 'use client'
 
-import { useState, useEffect, useCallback } from 'react'
+import { useState, useEffect, useCallback, memo, useRef } from 'react'
 import Link from 'next/link'
 import { usePathname, useRouter } from 'next/navigation'
 import { workers } from '@/lib/data'
@@ -16,7 +16,6 @@ const workerNavItems = [
 
 const adminNavItems = [
   { id: 'dashboard', label: 'Dashboard', icon: 'dashboard',    href: '/admin'         },
-  { id: 'jobs',      label: 'Jobs',      icon: 'construction', href: '/admin/jobs'    },
   { id: 'supers',    label: 'Supers',    icon: 'groups',       href: '/admin/supers'  },
   { id: 'reports',   label: 'Reports',   icon: 'analytics',    href: '/admin/reports' },
   { id: 'profile',   label: 'Profile',   icon: 'person',       href: '/profile', fillOnActive: true },
@@ -35,41 +34,50 @@ function getWorkerActive(pathname: string): WorkerNavId | '' {
 
 function getAdminActive(pathname: string): AdminNavId | '' {
   if (pathname === '/admin')                 return 'dashboard'
-  if (pathname.startsWith('/admin/jobs'))    return 'jobs'
+  if (pathname.startsWith('/admin/jobs'))    return 'dashboard'
   if (pathname.startsWith('/admin/supers'))  return 'supers'
   if (pathname.startsWith('/admin/reports')) return 'reports'
   if (pathname.startsWith('/profile'))       return 'profile'
   return 'dashboard'
 }
 
+// ─── Navigation direction tracking ───────────────────────────────────────────
+const TAB_PAGES = new Set([
+  '/home', '/reports', '/rolodex', '/profile',
+  '/admin', '/admin/supers', '/admin/reports',
+])
+
+function getNavDirection(from: string, to: string): 'forward' | 'back' | 'tab' {
+  if (!from || from === '/') return 'forward'
+  const fromIsTab = TAB_PAGES.has(from)
+  const toIsTab   = TAB_PAGES.has(to)
+  if (fromIsTab && toIsTab)  return 'tab'
+  if (fromIsTab && !toIsTab) return 'forward'
+  if (!fromIsTab && toIsTab) return 'back'
+  return 'forward'
+}
+
 // ─── Shared bottom nav bar ────────────────────────────────────────────────────
-function BottomNavBar({
+const BottomNavBar = memo(function BottomNavBar({
   items,
   activeId,
 }: {
   items: ReadonlyArray<{ id: string; label: string; icon: string; href: string; fillOnActive?: boolean }>
   activeId: string
 }) {
+  const activeIndex = items.findIndex(i => i.id === activeId)
+  const tabWidth    = 100 / items.length
+
   return (
     <nav className="fixed bottom-0 left-0 right-0 z-50 safe-bottom">
-      <div className="max-w-lg mx-auto flex items-stretch justify-around h-14 bg-background border-t border-surface-container-low">
+      <div className="relative max-w-lg mx-auto flex items-stretch justify-around h-14 bg-background border-t border-surface-container-low">
+        {/* Sliding active indicator bar */}
+        <div
+          className="absolute top-0 h-0.5 bg-primary-container transition-[left] duration-250 ease-in-out"
+          style={{ width: `${tabWidth}%`, left: `${activeIndex * tabWidth}%`, opacity: activeIndex >= 0 ? 1 : 0 }}
+        />
         {items.map((item) => {
           const isActive = activeId === item.id
-
-          if (isActive && item.id === 'profile') {
-            return (
-              <Link
-                key={item.id}
-                href={item.href}
-                className="flex flex-col items-center justify-center gap-0.5 w-full h-full bg-primary-container text-on-primary-container"
-              >
-                <span className="material-symbols-outlined text-xl" style={{ fontVariationSettings: "'FILL' 1" }}>
-                  {item.icon}
-                </span>
-                <span className="font-heading font-bold text-[10px] uppercase tracking-tighter">{item.label}</span>
-              </Link>
-            )
-          }
 
           return (
             <Link
@@ -80,12 +88,16 @@ function BottomNavBar({
               }`}
             >
               <span
-                className={`material-symbols-outlined text-xl ${isActive ? 'text-primary-container' : 'text-on-surface-variant'}`}
+                className={`material-symbols-outlined text-xl transition-transform duration-200 ${
+                  isActive ? '-translate-y-0.5 text-primary-container' : 'text-on-surface-variant'
+                }`}
                 style={isActive && item.fillOnActive ? { fontVariationSettings: "'FILL' 1" } : undefined}
               >
                 {item.icon}
               </span>
-              <span className={`font-heading font-bold text-[10px] uppercase tracking-tighter ${isActive ? 'text-primary-container' : 'text-on-surface-variant'}`}>
+              <span className={`font-heading font-bold text-[10px] uppercase tracking-tighter ${
+                isActive ? 'text-primary-container' : 'text-on-surface-variant'
+              }`}>
                 {item.label}
               </span>
             </Link>
@@ -94,10 +106,10 @@ function BottomNavBar({
       </div>
     </nav>
   )
-}
+})
 
 // ─── Unified topbar (logo + worker name + optional admin toggle) ──────────────
-function Topbar({
+const Topbar = memo(function Topbar({
   workerName,
   isAdmin,
   isAdminView,
@@ -134,7 +146,7 @@ function Topbar({
       </div>
     </header>
   )
-}
+})
 
 // ─── Main export ──────────────────────────────────────────────────────────────
 export function AppLayout({ children }: { children: React.ReactNode }) {
@@ -145,6 +157,14 @@ export function AppLayout({ children }: { children: React.ReactNode }) {
 
   const pathname = usePathname()
   const router   = useRouter()
+
+  // Track navigation direction for page-enter animations
+  const prevPathnameRef = useRef(pathname)
+  useEffect(() => {
+    const direction = getNavDirection(prevPathnameRef.current, pathname)
+    document.documentElement.dataset.navDirection = direction
+    prevPathnameRef.current = pathname
+  }, [pathname])
 
   const worker = workers[0]
 
@@ -256,7 +276,7 @@ export function AppLayout({ children }: { children: React.ReactNode }) {
               </button>
             </div>
           </header>
-          <main className="flex-1">
+          <main key={pathname} className="flex-1 page-root">
             {children}
           </main>
         </div>
@@ -280,7 +300,7 @@ export function AppLayout({ children }: { children: React.ReactNode }) {
           isAdminView={false}
           onToggle={toggleAdminView}
         />
-        <div className="flex-1 pb-14">
+        <div key={pathname} className="flex-1 pb-14 page-root">
           {children}
         </div>
         <BottomNavBar items={workerNavItems} activeId={workerActive} />
@@ -297,7 +317,7 @@ export function AppLayout({ children }: { children: React.ReactNode }) {
         isAdminView={isAdminView}
         onToggle={toggleAdminView}
       />
-      <div className="flex-1 pb-14">
+      <div key={pathname} className="flex-1 pb-14 page-root">
         {children}
       </div>
       <BottomNavBar items={adminNavItems} activeId={adminActive} />

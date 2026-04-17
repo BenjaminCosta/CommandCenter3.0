@@ -1,8 +1,10 @@
 'use client'
 
-import { useState } from 'react'
+import { useState, useMemo } from 'react'
 import { useRouter } from 'next/navigation'
 import { workers, timeEntries, jobs, formatTime } from '@/lib/data'
+
+const jobMap = new Map(jobs.map(j => [j.id, j]))
 
 // ─── Week grouping helpers ────────────────────────────────────────────────────
 /** Returns the ISO date string of the Saturday on-or-after a given date string */
@@ -37,23 +39,23 @@ export default function HoursPage() {
   const router = useRouter()
   const worker = workers[0]
 
-  // All entries for this worker, newest first
-  const myEntries = timeEntries
-    .filter(e => e.workerId === worker.id)
-    .sort((a, b) => b.date.localeCompare(a.date))
+  const { weeks, totalAllTime } = useMemo(() => {
+    const myEntries = timeEntries
+      .filter(e => e.workerId === worker.id)
+      .sort((a, b) => b.date.localeCompare(a.date))
 
-  // Group by week-ending Saturday
-  const weekMap = new Map<string, typeof myEntries>()
-  for (const entry of myEntries) {
-    const sat = saturdayOf(entry.date)
-    if (!weekMap.has(sat)) weekMap.set(sat, [])
-    weekMap.get(sat)!.push(entry)
-  }
+    const weekMap = new Map<string, typeof myEntries>()
+    for (const entry of myEntries) {
+      const sat = saturdayOf(entry.date)
+      if (!weekMap.has(sat)) weekMap.set(sat, [])
+      weekMap.get(sat)!.push(entry)
+    }
 
-  // Sort weeks descending
-  const weeks = [...weekMap.entries()].sort(([a], [b]) => b.localeCompare(a))
-
-  const totalAllTime = myEntries.reduce((s, e) => s + (e.hours ?? 0), 0)
+    return {
+      weeks: [...weekMap.entries()].sort(([a], [b]) => b.localeCompare(a)),
+      totalAllTime: myEntries.reduce((s, e) => s + (e.hours ?? 0), 0),
+    }
+  }, [worker.id])
 
   const [openWeeks, setOpenWeeks] = useState<Set<string>>(
     new Set(weeks.length ? [weeks[0][0]] : [])
@@ -149,7 +151,7 @@ export default function HoursPage() {
                 {isOpen && (
                   <div className="bg-secondary-fixed border-t border-on-secondary-fixed/10">
                     {entries.map((entry, i) => {
-                      const jobName = jobs.find(j => j.id === entry.jobId)?.name ?? entry.jobId
+                      const jobName = jobMap.get(entry.jobId)?.name ?? entry.jobId
                       return (
                         <div
                           key={entry.id}

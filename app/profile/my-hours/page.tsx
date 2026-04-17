@@ -98,7 +98,7 @@ export default function MyHoursPage() {
             const isExpanded = expandedWeeks.has(week.weekEnd)
             const isFirst = wi === 0
             return (
-              <div key={week.weekEnd} className="bg-secondary-fixed text-on-secondary-fixed overflow-hidden">
+              <div key={week.weekEnd} className="bg-secondary-fixed text-on-secondary-fixed overflow-hidden card-stagger" style={{"--card-i": wi} as React.CSSProperties}>
 
                 {/* Week header row */}
                 <button

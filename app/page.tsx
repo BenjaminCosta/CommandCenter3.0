@@ -23,7 +23,7 @@ export default function LoginPage() {
   return (
     <div className="min-h-screen bg-background flex flex-col">
       {/* Hero: logo + branding */}
-      <div className="flex-1 flex flex-col items-center justify-center px-8">
+      <div className="flex-1 flex flex-col items-center justify-center px-8 login-hero">
         {/* Top scan divider */}
         <div className="w-full max-w-xs flex items-center gap-4 mb-10">
           <div className="flex-1 h-px bg-surface-container-high" />
@@ -62,7 +62,7 @@ export default function LoginPage() {
       </div>
 
       {/* Form panel */}
-      <div className="w-full max-w-sm mx-auto px-6 pb-14 space-y-3">
+      <div className="w-full max-w-sm mx-auto px-6 pb-14 space-y-3 login-form">
         <form onSubmit={handleSignIn} className="space-y-3">
           <input
             type="email"
